@@ -29,50 +29,67 @@
     .nav-links span:hover, .nav-links span.active { color: #0056b3; font-weight: bold; }
 
     /* 頁面主體容器 */
-    .container { max-width: 1000px; margin: 120px auto 60px auto; padding: 0 20px; }
+    .container { max-width: 1000px; margin: 120px auto 100px auto; padding: 0 20px; }
     .page { display: none; }
     .page.active { display: block; }
 
-    /* === 1. 首頁樣式 === */
-    .hero-section { display: flex; align-items: center; justify-content: space-between; min-height: 400px; }
+    /* === 1. 首頁與大圖樣式 === */
+    .hero-section { display: flex; align-items: center; justify-content: space-between; min-height: 350px; margin-bottom: 40px; }
     .hero-left { flex: 1; }
     .counter-box { font-size: 64px; font-weight: 900; color: #1a365d; margin-bottom: 10px; }
     .counter-box span { font-size: 24px; color: #4a5568; font-weight: normal; margin-left: 10px; }
     .btn-group { display: flex; gap: 15px; margin-top: 30px; }
     .btn { padding: 12px 40px; border-radius: 30px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; text-decoration: none; text-align: center; }
     .btn-dark { background-color: #1a202c; color: #fff; }
-    .btn-outline { border: 2px solid #1a202c; background: transparent; color: #1a202c; }
-    .hero-right img { max-width: 380px; height: auto; }
+    .hero-right img { max-width: 350px; height: auto; }
 
-    /* === 2. 統計頁樣式 === */
-    .page-title { font-size: 32px; font-weight: bold; color: #1a365d; text-align: center; margin-bottom: 40px; }
-    .leaderboard-section { max-width: 600px; margin: 0 auto 50px auto; }
-    .rank-item { padding: 15px 0; border-bottom: 1px solid #eee; font-size: 18px; }
+    /* === 排行榜與九宮格區塊 === */
+    .section-title { font-size: 28px; font-weight: bold; color: #1a365d; text-align: center; margin: 50px 0 30px 0; position: relative; }
+    .section-title::after { content: ''; display: block; width: 50px; height: 3px; background: #0056b3; margin: 10px auto 0 auto; border-radius: 2px; }
+    
+    .leaderboard-section { max-width: 600px; margin: 0 auto 40px auto; background: #fafafa; padding: 20px; border-radius: 16px; border: 1px solid #eee; }
+    .rank-item { padding: 15px 0; border-bottom: 1px solid #eee; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
+    .rank-item:last-child { border-bottom: none; }
     .rank-item span.city-click { color: #0056b3; cursor: pointer; text-decoration: underline; font-weight: bold; }
-    .city-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
-    .city-card { border: 1px solid #eee; padding: 20px; text-align: center; border-radius: 12px; cursor: pointer; }
-    .city-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .city-card h4 { font-size: 18px; margin-bottom: 10px; }
-    .city-num { background: #1a202c; color: #fff; padding: 6px 25px; border-radius: 20px; display: inline-block; font-weight: bold; }
+    .rank-medal { font-weight: bold; color: #e2e8f0; font-size: 14px; text-transform: uppercase; }
+    
+    .city-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px; }
+    .city-card { border: 1px solid #eee; padding: 20px; text-align: center; border-radius: 12px; cursor: pointer; transition: all 0.2s; background: #fff; }
+    .city-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); transform: translateY(-2px); }
+    .city-card h4 { font-size: 18px; margin-bottom: 10px; color: #2d3748; }
+    .city-num { background: #1a202c; color: #fff; padding: 4px 20px; border-radius: 20px; display: inline-block; font-weight: bold; font-size: 14px; }
 
-    /* === 3. 縣市列表頁樣式 === */
+    /* === 2. 縣市列表頁樣式 === */
+    .page-title { font-size: 32px; font-weight: bold; color: #1a365d; text-align: center; margin-bottom: 40px; }
     .water-list { max-width: 700px; margin: 0 auto; }
-    .water-item { border-bottom: 1px solid #eee; padding: 20px 0; cursor: pointer; }
+    .water-item { border-bottom: 1px solid #eee; padding: 20px 0; cursor: pointer; transition: background 0.2s; padding-left: 10px; border-radius: 8px; }
+    .water-item:hover { background: #f7fafc; }
     .water-item h3 { color: #1a365d; font-size: 20px; margin-bottom: 5px; text-decoration: underline; }
     .water-item p { color: #0056b3; font-size: 14px; }
 
-    /* === 4. 詳細資料頁樣式 === */
+    /* === 3. 詳細資料頁樣式 === */
     .detail-box { display: flex; gap: 40px; align-items: flex-start; margin-top: 20px; }
-    .detail-img img { max-width: 400px; border-radius: 12px; border: 1px solid #eee; }
-    .detail-info { flex: 1; }
-    .info-group { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-    .info-label { font-size: 14px; color: #888; margin-bottom: 5px; }
-    .info-value { font-size: 16px; font-weight: 500; }
-    .info-value a { color: #0056b3; text-decoration: none; }
+    .detail-img { flex: 1; text-align: center; }
+    .detail-img img { max-width: 100%; max-height: 500px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .detail-info { flex: 1; background: #fafafa; padding: 30px; border-radius: 16px; border: 1px solid #eee; }
+    .info-group { margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+    .info-group:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+    .info-label { font-size: 14px; color: #888; margin-bottom: 8px; letter-spacing: 1px; }
+    .info-value { font-size: 18px; font-weight: 500; color: #2d3748; }
+    .info-value a { color: #0056b3; text-decoration: none; font-weight: bold; }
+    .info-value a:hover { text-decoration: underline; }
 
     /* 藍色橫條廣告欄 */
-    .bottom-bar { background-color: #00aaff; color: white; text-align: center; padding: 15px; position: fixed; bottom: 0; width: 100%; font-size: 14px; }
+    .bottom-bar { background-color: #00aaff; color: white; text-align: center; padding: 15px; position: fixed; bottom: 0; width: 100%; font-size: 14px; z-index: 99; }
     .bottom-bar button { background: white; color: #00aaff; border: none; padding: 4px 12px; border-radius: 4px; font-weight: bold; margin-left: 10px; cursor: pointer; }
+
+    /* 響應式手機優化 */
+    @media (max-width: 768px) {
+      .hero-section { flex-direction: column; text-align: center; min-height: auto; gap: 30px; }
+      .hero-right img { max-width: 260px; }
+      .city-grid { grid-template-columns: repeat(2, 1fr); }
+      .detail-box { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
@@ -84,8 +101,7 @@
         <p>Water dispenser</p>
       </a>
       <div class="nav-links">
-        <span id="nav-home" onclick="showPage('home')" class="active">首頁</span>
-        <span id="nav-stats" onclick="showPage('stats')">統計</span>
+        <span id="nav-home" onclick="showPage('home')" class="active">首頁與統計</span>
         <span onclick="window.open('https://www.threads.net', '_blank')">飲水機研究社</span>
       </div>
     </div>
@@ -97,23 +113,22 @@
       <div class="hero-section">
         <div class="hero-left">
           <div class="counter-box"><span id="total-count">0</span>台</div>
-          <div style="font-size:20px; color:#4a5568; font-weight:bold; margin-bottom:20px;">飲水機</div>
+          <div style="font-size:24px; color:#4a5568; font-weight:bold; margin-bottom:20px;">飲水機</div>
           <div class="btn-group">
-            <button class="btn btn-dark" onclick="window.open('https://threads.net', '_blank')">加入</button>
-            <button class="btn btn-outline" onclick="showPage('stats')">統計</button>
+            <button class="btn btn-dark" onclick="window.open('https://threads.net', '_blank')">加入我們</button>
           </div>
         </div>
         <div class="hero-right">
           <img src="https://i.imgur.com/gK9u78v.png" alt="Water Dispenser">
         </div>
       </div>
-    </div>
 
-    <div id="page-stats" class="page">
-      <h2 class="page-title">各縣市排行榜</h2>
+      <h3 class="section-title">各縣市排行榜</h3>
       <div class="leaderboard-section" id="top-cities-list">
-        </div>
-      <hr style="border:0; border-top:1px solid #eee; margin:40px 0;">
+        <p style="text-align:center; color:#999; padding:20px;">📊 數據載入中...</p>
+      </div>
+
+      <h3 class="section-title">點選縣市查看清單</h3>
       <div class="city-grid" id="all-cities-grid">
         </div>
     </div>
@@ -132,15 +147,15 @@
         </div>
         <div class="detail-info">
           <div class="info-group">
-            <div class="info-label">ⓘ 資料</div>
-            <div class="info-value" id="detail-school">學校名稱</div>
-            <div class="info-value" style="margin-top:5px;"><a id="detail-threads-link" href="#" target="_blank">Threads 帳號</a></div>
-            <div class="info-value" style="margin-top:5px;"><a id="detail-ig-link" href="#" target="_blank">IG 帳號</a></div>
-            <div class="info-value" style="margin-top:5px; color:#888;">📊 雲端即時粉絲數：<span id="detail-followers" style="color:#000; font-weight:bold;">0</span></div>
+            <div class="info-label">ⓘ 基本資料</div>
+            <div class="info-value" id="detail-school" style="font-size:22px; font-weight:bold; color:#1a365d; margin-bottom:10px;">學校名稱</div>
+            <div class="info-value" style="margin-bottom:8px;"><a id="detail-threads-link" href="#" target="_blank">Threads 帳號</a></div>
+            <div class="info-value" style="margin-bottom:8px;"><a id="detail-ig-link" href="#" target="_blank">IG 帳號</a></div>
+            <div class="info-value" style="color:#64748b; font-size:16px;">📊 雲端即時粉絲數：<span id="detail-followers" style="color:#000; font-weight:bold; font-size:18px;">0</span></div>
           </div>
           <div class="info-group">
-            <div class="info-label">👤 稱號</div>
-            <div class="info-value" id="detail-title" style="color:#2b6cb0; font-weight:bold;">最美濾網飲水機</div>
+            <div class="info-label">🌟 榮譽稱號</div>
+            <div class="info-value" id="detail-title" style="color:#2b6cb0; font-weight:bold; font-size:20px;">最美濾網飲水機</div>
           </div>
         </div>
       </div>
@@ -149,7 +164,7 @@
   </div>
 
   <div class="bottom-bar">
-    此網站是在 GitHub 上運作的動態觀測站！ <button onclick="showPage('stats')">立即開始</button>
+    此網站為全自動雲端即時連線觀測站！ <button onclick="showPage('home')">回到頂端</button>
   </div>
 
   <script>
@@ -162,12 +177,12 @@
     // 核心切換網頁控制
     function showPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-links span').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-links span').forEach(s => s.forEach ? "" : s.classList.remove('active'));
+      
+      const navItem = document.getElementById('nav-' + pageId);
+      if (navItem) navItem.classList.add('active');
       
       document.getElementById('page-' + pageId).classList.add('active');
-      if(document.getElementById('nav-' + pageId)) {
-        document.getElementById('nav-' + pageId).classList.add('active');
-      }
       window.scrollTo(0,0);
     }
 
@@ -193,20 +208,25 @@
           return { name: key, count: cityCounts[key] };
         }).sort((a,b) => b.count - a.count);
 
-        // 3. 渲染統計頁的排行榜 (前三名)
+        // 3. 渲染首頁的排行榜 (前三名)
         const topListHTML = document.getElementById('top-cities-list');
         topListHTML.innerHTML = '';
-        const medals = ["1st", "2nd", "3rd"];
-        sortedCities.slice(0, 3).forEach((city, idx) => {
-          topListHTML.innerHTML += `
-            <div class="rank-item">
-              <p style="color:#666; font-size:14px; margin-bottom:5px;">${medals[idx]}</p>
-              <span class="city-click" onclick="openCityPage('${city.name}')">${city.name}：${city.count}</span>
-            </div>`;
-        });
+        const medals = ["🥇 1st", "🥈 2nd", "🥉 3rd"];
+        
+        if (sortedCities.length === 0) {
+          topListHTML.innerHTML = `<p style="text-align:center; color:#999; padding:10px;">目前尚無數據</p>`;
+        } else {
+          sortedCities.slice(0, 3).forEach((city, idx) => {
+            topListHTML.innerHTML += `
+              <div class="rank-item">
+                <span class="rank-medal">${medals[idx]}</span>
+                <span class="city-click" onclick="openCityPage('${city.name}')">${city.name} (${city.count} 台)</span>
+              </div>`;
+          });
+        }
 
-        // 4. 渲染九宮格縣市清單
-        const allCities = ["臺北市", "新北市", "基隆市", "桃園市", "新竹縣", "新竹市", "苗栗縣", "臺中市", "彰化縣"];
+        // 4. 渲染九宮格縣市清單 (全台灣常見縣市)
+        const allCities = ["臺北市", "新北市", "基隆市", "桃園市", "新竹縣", "新竹市", "苗栗縣", "臺中市", "彰化縣", "宜蘭縣", "花蓮縣", "臺東縣"];
         const gridHTML = document.getElementById('all-cities-grid');
         gridHTML.innerHTML = '';
         allCities.forEach(cityName => {
@@ -214,12 +234,13 @@
           gridHTML.innerHTML += `
             <div class="city-card" onclick="openCityPage('${cityName}')">
               <h4>${cityName}</h4>
-              <div class="city-num">${count}</div>
+              <div class="city-num">${count} 台</div>
             </div>`;
         });
 
       } catch (error) {
         console.error("載入失敗:", error);
+        document.getElementById('top-cities-list').innerHTML = `<p style="text-align:center; color:red; padding:10px;">❌ 雲端資料載入失敗，請確認 API 設定。</p>`;
       }
     }
 
@@ -229,15 +250,16 @@
       const listHTML = document.getElementById('city-water-items');
       listHTML.innerHTML = '';
 
+      // 篩選出屬於該縣市的飲水機
       const filtered = globalData.filter(item => item.city === cityName);
 
       if(filtered.length === 0) {
-        listHTML.innerHTML = `<p style="text-align:center; color:#999; padding:40px;">目前該縣市尚未有入榜的飲水機帳號。</p>`;
+        listHTML.innerHTML = `<p style="text-align:center; color:#999; padding:40px; border: 1px dashed #eee; border-radius:12px;">目前 ${cityName} 尚未有入榜的飲水機帳號。</p>`;
       } else {
         filtered.forEach(item => {
           listHTML.innerHTML += `
             <div class="water-item" onclick="openDetailPage('${item.username}')">
-              <h3>${item.school}${item.location}</h3>
+              <h3>${item.school} ${item.location}</h3>
               <p>@${item.username}</p>
             </div>`;
         });
@@ -245,26 +267,35 @@
       showPage('city-list');
     }
 
-    // 開啟單一飲水機的詳細頁面
+    // 開啟單一飲水機的詳細頁面 (終點頁)
     function openDetailPage(username) {
       const item = globalData.find(p => p.username === username);
       if(!item) return;
 
-      document.getElementById('detail-main-title').innerText = item.school + item.location;
-      document.getElementById('detail-school').innerText = item.school;
-      document.getElementById('detail-title').innerText = item.title || "暫無稱號";
+      document.getElementById('detail-main-title').innerText = item.school + " " + item.location;
+      document.getElementById('detail-school').innerText = item.school + " (" + item.location + ")";
+      document.getElementById('detail-title').innerText = item.title || "熱情招募專屬稱號中 🥤";
       document.getElementById('detail-followers').innerText = item.followers;
       
+      // 串接社群連結
       document.getElementById('detail-threads-link').href = `https://www.threads.net/@${item.username}`;
-      document.getElementById('detail-threads-link').innerText = `@${item.username} (Threads)`;
-      document.getElementById('detail-ig-link').href = item.igUrl || "#";
-      document.getElementById('detail-ig-link').innerText = item.igUrl ? "前往官方 Instagram" : "無 IG 帳號資料";
+      document.getElementById('detail-threads-link').innerText = `@${item.username} (前往 Threads 觀戰)`;
+      
+      if(item.igUrl && item.igUrl.startsWith('http')) {
+        document.getElementById('detail-ig-link').style.display = 'block';
+        document.getElementById('detail-ig-link').href = item.igUrl;
+        document.getElementById('detail-ig-link').innerText = "📸 前往官方 Instagram";
+      } else {
+        document.getElementById('detail-ig-link').style.display = 'none';
+      }
 
+      // 載入照片，若試算表沒填照片就給一張預設圖
       document.getElementById('detail-img-src').src = item.imageUrl || "https://i.imgur.com/gK9u78v.png";
 
       showPage('detail');
     }
 
+    // 網頁啟動時自動加載雲端試算表數據
     loadData();
   </script>
 </body>
