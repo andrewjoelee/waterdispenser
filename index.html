@@ -35,14 +35,13 @@
     .page.active { display: block; }
 
     /* === 1. 極簡首頁與大圖樣式 === */
-    .hero-section { display: flex; align-items: center; justify-content: space-between; min-height: 300px; margin-bottom: 60px; }
+    .hero-section { display: flex; align-items: center; justify-content: space-between; min-height: 220px; margin-bottom: 40px; }
     .hero-left { flex: 1; }
     .counter-box { font-size: 64px; font-weight: 900; color: #1a365d; margin-bottom: 5px; }
     .counter-box span { font-size: 24px; color: #4a5568; font-weight: normal; margin-left: 10px; }
-    .hero-right img { max-width: 250px; height: auto; }
 
     /* === 榜單與區塊極簡樣式 === */
-    .section-title { font-size: 22px; font-weight: bold; color: #1a365d; margin: 50px 0 20px 0; padding-left: 10px; border-left: 4px solid #0056b3; }
+    .section-title { font-size: 22px; font-weight: bold; color: #1a365d; margin: 40px 0 20px 0; padding-left: 10px; border-left: 4px solid #0056b3; }
     
     .list-container { border: 1px solid #eee; border-radius: 12px; overflow: hidden; background: #fff; margin-bottom: 20px; }
     .list-item { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 16px; }
@@ -91,7 +90,7 @@
     .info-value a { color: #0056b3; text-decoration: none; font-weight: 500; }
     .info-value a:hover { text-decoration: underline; }
     
-    /* badges 標籤額外樣式 */
+    /* badges 標籤樣式 */
     .badge { display: inline-block; padding: 2px 8px; font-size: 12px; font-weight: bold; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
     .badge-club { background: #e2e8f0; color: #4a5568; }
     .badge-officer { background: #feebc8; color: #c05621; }
@@ -99,7 +98,6 @@
     /* 響應式手機調整 */
     @media (max-width: 768px) {
       .hero-section { flex-direction: column; text-align: center; gap: 20px; }
-      .hero-right img { max-width: 180px; }
       .city-grid, .officer-grid { grid-template-columns: repeat(2, 1fr); }
       .detail-box { flex-direction: column; }
     }
@@ -129,7 +127,7 @@
           <div style="font-size:20px; color:#4a5568; font-weight:500;">全台高中飲水機資料庫</div>
         </div>
         <div class="hero-right">
-          <svg width="150" height="230" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="120" height="180" viewBox="0 0 100 150" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="100" height="150" rx="8" fill="#E2E8F0"/>
             <rect x="10" y="10" width="80" height="35" rx="4" fill="#1A202C"/>
             <circle cx="30" cy="28" r="4" fill="#E53E3E"/>
@@ -181,8 +179,12 @@
         </div>
         <div class="detail-info">
           <div class="info-group">
-            <div class="info-label">學校與位置</div>
+            <div class="info-label">主要學校</div>
             <div class="info-value" id="detail-school" style="font-size:20px; font-weight:bold; color:#1a365d;">學校名稱</div>
+          </div>
+          <div class="info-group" id="detail-location-group">
+            <div class="info-label">具體安裝位置</div>
+            <div class="info-value" id="detail-location">-</div>
           </div>
           <div class="info-group">
             <div class="info-label">即時粉絲數量</div>
@@ -194,8 +196,7 @@
           </div>
           <div class="info-group">
             <div class="info-label">社群連結</div>
-            <div class="info-value" style="margin-bottom:6px;"><a id="detail-threads-link" href="#" target="_blank">前往 Threads 專頁</a></div>
-            <div class="info-value" id="detail-ig-group"><a id="detail-ig-link" href="#" target="_blank">前往 Instagram 專頁</a></div>
+            <div class="info-value"><a id="detail-threads-link" href="#" target="_blank">前往 Threads 專頁</a></div>
           </div>
         </div>
       </div>
@@ -204,22 +205,19 @@
   </div>
 
   <script>
-    // 🛠️ 已經自動幫你把連結加進去了！
     const BASE_URL = "https://script.google.com/macros/s/AKfycbyAw_RaACLaX8cTCcHLl3aqGvZrXcn4g-xPB76xgZZxw8_UeoiyGDCzJyy5mZ1tkL0L/exec";
-    const SCRIPT_URL = BASE_URL + "?action=read";
-
+    
     let globalData = [];
-    // 標準化全台縣市名稱對接
     const ALL_TW_CITIES = ["臺北市", "新北市", "基隆市", "桃園市", "新竹縣", "新竹市", "苗栗縣", "臺中市", "彰化縣", "南投縣", "雲林縣", "嘉義縣", "嘉義市", "臺南市", "高雄市", "屏東縣", "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣"];
 
-    // 數據欄位對應大腦：精確對齊你的「帳號主資料表」中文欄位名稱
+    // 🛠️ 精確對齊你試算表欄位的大腦，徹底解決 undefined 問題！
     function mapRawData(rawItems) {
       return rawItems.map(item => {
-        // 自動補完與校正縣市名稱
-        let cityFix = item["縣市"] || item["縣市別"] || "";
+        // 修正並補齊縣市名稱，如「高雄」轉為「高雄市」、「宜蘭縣」保留
+        let cityFix = String(item["縣市"] || "").trim();
         if (cityFix && !cityFix.endsWith("縣") && !cityFix.endsWith("市")) {
           if (["臺北", "新北", "基隆", "桃園", "新竹", "苗栗", "臺中", "彰化", "南投", "雲林", "嘉義", "臺南", "高雄", "屏東", "宜蘭", "花蓮", "臺東", "澎湖", "金門", "連江"].includes(cityFix)) {
-            cityFix = (["新竹", "苗栗", "彰化", "南投", "雲林", "嘉義", "屏東", "宜蘭", "花蓮", "臺東"].includes(cityFix) && cityFix !== "嘉義市" && cityFix !== "新竹市") ? cityFix + "縣" : cityFix + "市";
+            cityFix = (["新竹", "苗栗", "彰化", "南投", "雲林", "嘉義", "屏東", "宜蘭", "花蓮", "臺東"].includes(cityFix)) ? cityFix + "縣" : cityFix + "市";
           }
         }
         if (cityFix === "台北市") cityFix = "臺北市";
@@ -228,22 +226,21 @@
         if (cityFix === "台東縣") cityFix = "臺東縣";
 
         return {
-          username: String(item["ID"] || item["username"] || "").trim(),
-          brand: item["品牌"] || item["brand"] || "",
-          title: item["稱號"] || item["title"] || "暫無稱號",
-          school: item["學校"] || item["school"] || "未知學校",
-          city: cityFix,
-          address: item["地址"] || "",
-          location: item["位置"] || item["location"] || "",
-          imageUrl: item["圖片"] || item["image"] || "",
-          followers: parseInt(item["最新粉絲數"] || item["followers"]) || 0,
+          username: String(item["ID"] || "").trim(),
+          brand: String(item["品牌"] || "").trim(),
+          title: String(item["稱號"] || "暫無稱號").trim(),
+          school: String(item["學校"] || "未知學校").trim(),
+          city: cityFix || "未知縣市",
+          address: String(item["地址"] || "").trim(),
+          location: String(item["位置"] || "").trim(), // 如果為空，後面會自動防呆隱藏
+          imageUrl: String(item["圖片"] || "").trim(),
+          followers: parseInt(item["最新粉絲數"]) || 0,
           isClubMember: String(item["是否入社"] || "").trim(),
           officerTitle: String(item["社團職稱"] || "").trim()
         };
-      }).filter(item => item.username !== ""); // 濾掉空白列
+      }).filter(item => item.username !== "");
     }
 
-    // 前端路由機制
     function handleRouting() {
       const hash = window.location.hash;
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -275,42 +272,36 @@
 
     window.addEventListener('hashchange', handleRouting);
 
-    // 載入即時雲端數據
-    async function loadData() {
-      try {
-        const response = await fetch(SCRIPT_URL);
-        const rawJson = await response.json();
-        
-        // 轉換處理
-        globalData = mapRawData(rawJson);
-
-        document.getElementById('total-count').innerText = globalData.length;
-        handleRouting();
-      } catch (error) {
-        console.error("雲端數據對接失敗，請檢查 Gas 網址功能與權限:", error);
-      }
+    function loadData() {
+      const script = document.createElement('script');
+      script.src = BASE_URL + "?action=read&callback=handleGasResponse";
+      document.body.appendChild(script);
     }
 
-    // 1. 首頁渲染
+    window.handleGasResponse = function(rawJson) {
+      globalData = mapRawData(rawJson);
+      document.getElementById('total-count').innerText = globalData.length;
+      handleRouting();
+    }
+
     function renderHome() {
       if (globalData.length === 0) return;
 
-      // 個人粉絲排行榜 (全台 Top 10)
       const sortedPersonal = [...globalData].sort((a, b) => b.followers - a.followers);
       const personalHTML = document.getElementById('personal-rank-list');
       personalHTML.innerHTML = '';
       sortedPersonal.slice(0, 10).forEach((item, idx) => {
+        const locInfo = item.location ? ` (${item.location})` : '';
         personalHTML.innerHTML += `
           <div class="list-item">
             <div>
               <span class="rank-num">${idx + 1}</span>
-              <a class="item-name-link" onclick="navigate('/user/${item.username}')">${item.school} ${item.location}</a>
+              <a class="item-name-link" onclick="navigate('/user/${item.username}')">${item.school}${locInfo}</a>
             </div>
             <div class="item-value">${item.followers.toLocaleString()} 粉絲</div>
           </div>`;
       });
 
-      // 縣市總數排行榜計算
       let cityCounts = {};
       ALL_TW_CITIES.forEach(c => cityCounts[c] = 0);
       globalData.forEach(item => {
@@ -345,7 +336,6 @@
         }
       });
 
-      // 全台戰區目錄網格
       const gridHTML = document.getElementById('all-cities-grid');
       gridHTML.innerHTML = '';
       ALL_TW_CITIES.forEach(cityName => {
@@ -370,7 +360,6 @@
       }
     }
 
-    // 2. 縣市列表頁渲染
     function renderCityPage(cityName) {
       document.getElementById('city-page-title').innerText = cityName + " 戰區列表";
       const listHTML = document.getElementById('city-water-list');
@@ -383,32 +372,26 @@
         listHTML.innerHTML = `<div class="no-data-msg">目前該縣市尚未有入榜的飲水機資料。</div>`;
       } else {
         filtered.forEach(item => {
+          const locInfo = item.location ? ` ${item.location}` : '';
           listHTML.innerHTML += `
             <div class="water-list-item" onclick="navigate('/user/${item.username}')">
-              <h3>${item.school} ${item.location}</h3>
+              <h3>${item.school}${locInfo}</h3>
               <p>@${item.username} • ${item.followers.toLocaleString()} 粉絲</p>
             </div>`;
         });
       }
     }
 
-    // 3. 飲水機研究社專頁渲染
     function renderClub() {
       const officerHTML = document.getElementById('club-officers');
       const memberHTML = document.getElementById('club-members-list');
       officerHTML.innerHTML = '';
       memberHTML.innerHTML = '';
 
-      // 精確判斷試算表中「是否入社」為「是」的成員
       const clubData = globalData.filter(item => item.isClubMember === "是");
-
-      // 分流出有職稱的幹部
       const officers = clubData.filter(item => item.officerTitle !== "");
-
-      // 全體社員列表按粉絲數排序
       const sortedMembers = [...clubData].sort((a, b) => b.followers - a.followers);
 
-      // 渲染幹部卡片
       if (officers.length === 0) {
         officerHTML.innerHTML = `<p style="color:#a0aec0; font-size:14px; padding:10px;">目前尚未設定幹部資料。</p>`;
       } else {
@@ -423,17 +406,17 @@
         });
       }
 
-      // 渲染研究社成員清單
       if (sortedMembers.length === 0) {
         memberHTML.innerHTML = `<div class="no-data-msg">目前研究社尚無成員資料。</div>`;
       } else {
         sortedMembers.forEach((item, idx) => {
           const tag = item.officerTitle ? `<span class="badge badge-officer">${item.officerTitle}</span>` : '';
+          const locInfo = item.location ? ` (${item.location})` : '';
           memberHTML.innerHTML += `
             <div class="list-item">
               <div>
                 <span class="rank-num">${idx + 1}</span>
-                <a class="item-name-link" onclick="navigate('/user/${item.username}')">${item.school} ${item.location}</a>
+                <a class="item-name-link" onclick="navigate('/user/${item.username}')">${item.school}${locInfo}</a>
                 ${tag}
               </div>
               <div class="item-value">${item.followers.toLocaleString()} 粉絲</div>
@@ -442,7 +425,6 @@
       }
     }
 
-    // 4. 單一詳細頁渲染
     function renderDetailPage(username) {
       const item = globalData.find(p => p.username === username);
       if (!item) return;
@@ -454,25 +436,28 @@
         badgeHTML = `<span class="badge badge-club">社團成員 🥤</span>`;
       }
 
-      document.getElementById('detail-main-title').innerText = item.school + " " + item.location;
-      document.getElementById('detail-school').innerHTML = item.school + " (" + item.location + ")" + badgeHTML;
+      document.getElementById('detail-main-title').innerText = item.school;
+      document.getElementById('detail-school').innerHTML = item.school + badgeHTML;
+      
+      if (item.location) {
+        document.getElementById('detail-location-group').style.display = 'block';
+        document.getElementById('detail-location').innerText = item.location;
+      } else {
+        document.getElementById('detail-location-group').style.display = 'none';
+      }
+
       document.getElementById('detail-followers').innerText = item.followers.toLocaleString() + " 粉絲";
       document.getElementById('detail-title').innerText = item.title;
-      
       document.getElementById('detail-threads-link').href = `https://www.threads.net/@${item.username}`;
-      document.getElementById('detail-ig-group').style.display = 'none';
 
-      // 圖片防呆與渲染
       if (item.imageUrl && item.imageUrl.startsWith('http')) {
         document.getElementById('detail-img-src').style.display = 'block';
         document.getElementById('detail-img-src').src = item.imageUrl;
       } else {
-        // 沒有照片時產生的極簡內置預設圖
         document.getElementById('detail-img-src').src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23f7fafc'/><text x='50%27 y='50%27 font-size='10' fill='%23a0aec0' text-anchor='middle' alignment-baseline='middle'>暫無照片</text></svg>";
       }
     }
 
-    // 初始化載入
     loadData();
   </script>
 </body>
