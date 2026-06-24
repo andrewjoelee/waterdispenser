@@ -446,7 +446,7 @@
 
         function renderUserDetailPage(userId) {
             document.getElementById('user-view').classList.remove('hidden');
-
+	    document.getElementById('det-img').src = item.imageUrl
             const item = rawData.find(u => u.id === userId);
             if (!item) {
                 document.getElementById('det-name').innerText = "找不到該飲水機資料";
