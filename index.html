@@ -264,7 +264,6 @@
   </div>
 
   <script>
-    // API 串接核心邏輯與路由
     const API_URL = 'https://script.google.com/macros/s/AKfycbz_W-909N_7b_n50U_pZ9eE7WkQ2CAt137VInWofgBOfwE9A68uLIdnE_E98I_q1f0O/exec';
     let rawData = [];
 
@@ -291,7 +290,7 @@
       const hash = window.location.hash;
       if (hash.startsWith('#/user/')) {
         const userId = decodeURIComponent(hash.replace('#/user/', ''));
-        renderUserDetailPage(userId);
+        handleUserDetailRouting(userId);
       } else {
         renderListPage(rawData);
       }
@@ -354,7 +353,7 @@
       renderListPage(filtered);
     }
 
-    function renderUserDetailPage(userId) {
+    function handleUserDetailRouting(userId) {
       document.getElementById('list-view').classList.add('hidden');
       document.getElementById('user-view').classList.remove('hidden');
 
@@ -364,27 +363,27 @@
         return;
       }
 
-      // 1. 處理前三名排序標註
+      // 1. 純數字由大到小排序粉絲數，計算前三名
       const sortedData = [...rawData]
         .filter(u => u.followers !== undefined && u.followers !== null && u.followers !== "")
         .sort((a, b) => parseInt(b.followers || 0) - parseInt(a.followers || 0));
 
       const rank = sortedData.findIndex(u => u.id === userId) + 1;
 
-      // 2. 處理稱號後面的「學校」字樣
+      // 2. 稱號削掉結尾的「學校」二字
       let titleText = item.title || ""; 
       if (titleText.endsWith("學校")) {
         titleText = titleText.slice(0, -2);
       }
 
-      // 3. 加上冠亞季軍勳章
+      // 3. 前三名特別在稱號前面加上獎牌勳章
       if (titleText !== "" && rank > 0 && rank <= 3) {
         if (rank === 1) titleText = "🥇 冠軍 " + titleText;
         if (rank === 2) titleText = "🥈 亞軍 " + titleText;
         if (rank === 3) titleText = "🥉 季軍 " + titleText;
       }
 
-      // 4. 無稱號時，連同外層背景容器一併隱藏
+      // 4. 無稱號時，完全隱藏整個藍色背景框容器
       const titleLinkEl = document.getElementById('det-title-link');
       const titleContainerEl = document.getElementById('det-title-container');
       if (titleLinkEl && titleContainerEl) {
@@ -396,7 +395,7 @@
         }
       }
 
-      // 5. 填入其餘對齊好的 DOM 元件
+      // 5. 將對齊好的正確欄位內容渲染上網頁
       document.getElementById('det-name').innerText = item.name || "未命名飲水機";
       document.getElementById('det-img').src = item.imageUrl || "https://via.placeholder.com/400x400?text=No+Image";
 
