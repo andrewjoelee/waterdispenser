@@ -11,10 +11,10 @@ from playwright.sync_api import sync_playwright
 WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyAw_RaACLaX8cTCcHLl3aqGvZrXcn4g-xPB76xgZZxw8_UeoiyGDCzJyy5mZ1tkL0L/exec"
 
 # ⚠️ 在這裡輸入你要抓取的 Threads 帳號 ID 清單（你可以多加幾個試試看！）
-THREADS_ACCOUNTS = ["zuck",
+THREADS_ACCOUNTS = [
 "waterdispenserylshlinfeng2f2nd",
-"ckhs.__.water.dispenser",
-"ymhs_waterdispenser"] 
+"ymhs_waterdispenser",
+"fhsh_waterdispenser"] 
 
 
 def get_threads_follower(page, username):
