@@ -445,19 +445,27 @@
         }
 
         function renderUserDetailPage(userId) {
-            document.getElementById('user-view').classList.remove('hidden');
-	    document.getElementById('det-img').src = item.imageUrl
-            const item = rawData.find(u => u.id === userId);
-            if (!item) {
-                document.getElementById('det-name').innerText = "找不到該飲水機資料";
-                return;
-            }
+	  document.getElementById('user-view').classList.remove('hidden');
 
-            document.getElementById('det-name').innerText = item.name || "未命名飲水機";
-            document.getElementById('det-img').src = item.imageUrl || "https://via.placeholder.com/400x400?text=No+Image";
-            
-            const locLink = document.getElementById('det-location-link');
-            locLink.innerText = item.location || "未提供詳細地址";
+	  // 1. 先用小寫的 u.id 找出對應的飲水機資料（先宣告！）
+	  const item = rawData.find(u => u.id === userId);
+  
+	  // 2. 檢查有沒有找到這台飲水機
+	  if (!item) {
+	    document.getElementById('det-name').innerText = "找不到該飲水機資料";
+	    return;
+	  }
+
+	  // 3. 找到之後，才開始把資料塞進網頁（這時才能安全地使用 item！）
+	  document.getElementById('det-name').innerText = item.name || "未命名飲水機";
+  
+	  // 這裡確保是使用你在 Apps Script 裡面傳出來的小寫 imageUrl 欄位！
+	  document.getElementById('det-img').src = item.imageUrl || "https://via.placeholder.com/400x400?text=No+Image";
+
+	  // 接下來是原本處理地址、連結的其他程式碼...
+	  const locLink = document.getElementById('det-location');
+	  locLink.innerText = item.location || "未提供詳細地址";
+	  // ...後面保持原樣
             if (item.mapUrl) {
                 locLink.href = item.mapUrl;
                 locLink.style.pointerEvents = "auto";
