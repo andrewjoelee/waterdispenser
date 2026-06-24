@@ -1,124 +1,494 @@
-function renderUserDetailPage(userId) {
-  document.getElementById('user-view').classList.remove('hidden');
-
-  // 【功能一】動態計算粉絲數前三名，特別標註勳章
-  // 1. 先複製一份 rawData，排除沒有粉絲數的資料，並從大到小排序
-  const sortedData = [...rawData]
-    .filter(u => u.followers !== undefined && u.followers !== null && u.followers !== "")
-    .sort((a, b) => parseInt(b.followers || 0) - parseInt(a.followers || 0));
-
-  // 2. 找出目前點進來的這台飲水機
-  const item = rawData.find(u => u.id === userId);
-  if (!item) {
-    document.getElementById('det-name').innerText = "找不到該飲水機資料";
-    return;
-  }
-
-  // 3. 在排序後的陣列裡，找出這台飲水機是第幾名 (索引 + 1)
-  const rank = sortedData.findIndex(u => u.id === userId) + 1;
-
-  // 【功能二】處理稱號：刪除後面的「學校」，無稱號就空白，前三名加勳章
-  let titleText = item.title || ""; // 抓取稱號，如果沒有就空白
-
-  // 如果稱號結尾是「學校」或「社員」，就把這兩個字刪掉，讓字面更乾淨
-  if (titleText.endsWith("學校")) {
-    titleText = titleText.slice(0, -2);
-  } else if (titleText.endsWith("社員")) {
-    titleText = titleText.slice(0, -2);
-  }
-
-  // 如果這台飲水機名列前三名，且稱號不為空，就自動補上獎牌標註
-  if (titleText !== "") {
-    if (rank === 1) {
-      titleText = "🥇 冠軍 " + titleText;
-    } else if (rank === 2) {
-      titleText = "🥈 亞軍 " + titleText;
-    } else if (rank === 3) {
-      titleText = "🥉 季軍 " + titleText;
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>飲水機觀測站</title>
+  <style>
+    /* 全域與基本排版 */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fafafa;
+      color: #1a1a1a;
     }
-  }
-
-  // 渲染稱號到網頁上
-  const titleEl = document.getElementById('det-title-link'); // 或者是你的稱號標籤 ID
-  if (titleEl) {
-    titleEl.innerText = titleText;
-    // 【無稱號就空白】如果稱號完全是空的，直接把外層的黃色/藍色背景框隱藏起來
-    if (titleText === "") {
-      titleEl.parentElement.style.display = "none";
-    } else {
-      titleEl.parentElement.style.display = "inline-block";
+    header {
+      background-color: #ffffff;
+      border-bottom: 1px solid #dbdbdb;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-  }
-
-  // 填入飲水機名稱與正確的小寫 imageUrl 圖片
-  document.getElementById('det-name').innerText = item.name || "未命名飲水機";
-  document.getElementById('det-img').src = item.imageUrl || "https://via.placeholder.com/400x400?text=No+Image";
-
-  // 【功能三】將單頁的 "ID" 欄位標題改為 "Threads"
-  // 直接用 JS 去抓取 ID 連結前面的文字標籤，強制改成 Threads
-  const idLink = document.getElementById('det-id-link');
-  if (idLink) {
-    idLink.innerText = "@" + (item.id || "-");
-    // 順便修正前面的 <span> 標題字樣
-    const idLabel = idLink.parentElement.previousElementSibling;
-    if (idLabel && (idLabel.innerText === "ID" || idLabel.innerText.includes("ID"))) {
-      idLabel.innerText = "Threads";
+    .header-logo {
+      font-weight: bold;
+      color: #0066cc;
+      font-size: 1.2rem;
+      text-decoration: none;
     }
-  }
-
-  // 填入地址與地圖連結
-  const locLink = document.getElementById('det-location-link');
-  if (locLink) {
-    locLink.innerText = item.location || "未提供詳細地址";
-    if (item.mapUrl) {
-      locLink.href = item.mapUrl;
-      locLink.style.pointerEvents = "auto";
-      locLink.style.textDecoration = "underline";
-    } else {
-      locLink.removeAttribute('href');
-      locLink.style.pointerEvents = "none";
-      locLink.style.textDecoration = "none";
+    nav a {
+      margin-left: 15px;
+      color: #666;
+      text-decoration: none;
+      font-size: 0.9rem;
     }
-  }
-
-  // 填入學校名稱與連結
-  const schoolLink = document.getElementById('det-school-link');
-  if (schoolLink) {
-    schoolLink.innerText = item.school || "-";
-    if (item.schoolUrl) {
-      schoolLink.href = item.schoolUrl;
-      schoolLink.style.pointerEvents = "auto";
-      schoolLink.style.textDecoration = "underline";
-      schoolLink.style.color = "#0066cc";
-    } else {
-      schoolLink.removeAttribute('href');
-      schoolLink.style.pointerEvents = "none";
-      schoolLink.style.textDecoration = "none";
-      schoolLink.style.color = "#1a1a1a";
+    nav a:hover {
+      color: #000;
     }
-  }
-
-  // 填入品牌名稱與連結
-  const brandLink = document.getElementById('det-brand-link');
-  if (brandLink) {
-    brandLink.innerText = item.brand || "未標記";
-    if (item.brandUrl) {
-      brandLink.href = item.brandUrl;
-    } else {
-      brandLink.removeAttribute('href');
+    .container {
+      max-width: 935px;
+      margin: 30px auto;
+      padding: 0 20px;
     }
-  }
 
-  // 填入最新粉絲數量與更新時間
-  const followersEl = document.getElementById('det-followers');
-  if (followersEl) {
-    // 格式化數字加上千分位（例如 2700 改成 2,700）
-    const num = parseInt(item.followers || 0);
-    followersEl.innerText = num.toLocaleString();
-  }
+    /* 視圖控制 */
+    .view {
+      display: block;
+    }
+    .view.hidden {
+      display: none;
+    }
 
-  const updateTimeEl = document.getElementById('det-update-time');
-  if (updateTimeEl) {
-    updateTimeEl.innerText = item.updateTime ? "數據更新時間：" + item.updateTime : "";
-  }
-}
+    /* 列表視圖樣式 */
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .search-bar input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #dbdbdb;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+    }
+    .card-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background-color: #efefef;
+    }
+    .card-content {
+      padding: 15px;
+    }
+    .card-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    .card-school {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    .badge {
+      display: inline-block;
+      background-color: #edf2f7;
+      color: #4a5568;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    /* 詳細資料視圖樣式 */
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #0066cc;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .detail-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    @media (min-width: 768px) {
+      .detail-layout {
+        flex-direction: row;
+      }
+    }
+    .detail-main {
+      flex: 1.5;
+    }
+    .detail-side {
+      flex: 1;
+      border-top: 1px solid #efefef;
+      padding-top: 20px;
+    }
+    @media (min-width: 768px) {
+      .detail-side {
+        border-top: none;
+        border-left: 1px solid #efefef;
+        padding-top: 0;
+        padding-left: 20px;
+      }
+    }
+    .detail-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .detail-img-container {
+      width: 100%;
+      background: #efefef;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    .detail-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .detail-address-block {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+    .detail-side div {
+      margin-bottom: 15px;
+    }
+    .detail-side span {
+      color: #666;
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .detail-side strong {
+      font-size: 1.1rem;
+    }
+    .detail-badge {
+      display: inline-block;
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .followers-count {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .update-time {
+      font-size: 0.8rem;
+      color: #999;
+      margin-top: 5px;
+    }
+    #loading {
+      text-align: center;
+      padding: 5px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="#" class="header-logo" onclick="showListView()">飲水機觀測站</a>
+    <nav>
+      <a href="#" onclick="showListView()">首頁</a>
+      <a href="https://threads.net" target="_blank">飲水機研究社</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div id="loading">資料載入中...</div>
+
+    <!-- 🔍 列表視圖 -->
+    <div id="list-view" class="view hidden">
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="搜尋飲水機名稱、學校或品牌..." oninput="handleSearch()">
+      </div>
+      <div class="grid" id="grid-container"></div>
+    </div>
+
+    <!-- 🔍 詳細資料視圖 -->
+    <div id="user-view" class="view hidden">
+      <a href="#" class="back-btn" onclick="showListView()">&larr; 返回前一頁</a>
+      
+      <div class="detail-layout">
+        <div class="detail-main">
+          <div class="detail-name" id="det-name">飲水機名字</div>
+          <div class="detail-img-container">
+            <img src="" alt="飲水機照片" class="detail-img" id="det-img">
+          </div>
+          <div class="detail-address-block">
+            <strong>地址：</strong><a id="det-location-link" target="_blank" style="color: #0066cc; text-decoration: underline;">地址載入中</a>
+          </div>
+        </div>
+        
+        <div class="detail-side">
+          <div>
+            <span>學校</span>
+            <strong><a id="det-school-link" target="_blank" style="color: #1a1a1a; text-decoration: none;">-</a></strong>
+          </div>
+          <div>
+            <!-- 修改點：直接將網頁中的 "ID" 寫死改為 "Threads" -->
+            <span>Threads</span>
+            <strong><a id="det-id-link" target="_blank" style="color: #0066cc; text-decoration: none;">-</a></strong>
+          </div>
+          <div>
+            <span>稱號</span>
+            <span class="detail-badge" id="det-title-container">
+              <span id="det-title-link">-</span>
+            </span>
+          </div>
+          <div>
+            <span>品牌</span>
+            <strong><a id="det-brand-link" target="_blank" style="color: #0066cc; text-decoration: none;">-</a></strong>
+          </div>
+          <hr style="border: none; border-top: 1px solid #efefef; margin: 20px 0;">
+          <div>
+            <span>最新粉絲數量</span>
+            <div class="followers-count" id="det-followers">0</div>
+            <div class="update-time" id="det-update-time">數據更新時間：-</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Google Apps Script 的 API 網址
+    const API_URL = 'https://script.google.com/macros/s/AKfycbz_W-909N_7b_n50U_pZ9eE7WkQ2CAt137VInWofgBOfwE9A68uLIdnE_E98I_q1f0O/exec';
+
+    let rawData = [];
+
+    // 網頁初始化載入資料
+    window.addEventListener('DOMContentLoaded', () => {
+      fetch(API_URL)
+        .then(response => response.json())
+        .then(data => {
+          rawData = data;
+          document.getElementById('loading').style.display = 'none';
+          
+          // 檢查網址是否有路由（例如 #/user/帳號）
+          handleRouting();
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById('loading').innerText = '資料載入失敗，請確認 API 部署設定。';
+        });
+    });
+
+    // 監聽網址 Hash 改變
+    window.addEventListener('hashchange', handleRouting);
+
+    function handleRouting() {
+      const hash = window.location.hash;
+      if (hash.startsWith('#/user/')) {
+        const userId = hash.replace('#/user/', '');
+        renderUserDetailPage(userId);
+      } else {
+        renderListPage(rawData);
+      }
+    }
+
+    function showListView() {
+      window.location.hash = '';
+    }
+
+    // 渲染主列表頁面
+    function renderListPage(items) {
+      document.getElementById('user-view').classList.add('hidden');
+      document.getElementById('list-view').classList.remove('hidden');
+      
+      const container = document.getElementById('grid-container');
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 20px;">找不到符合的飲水機</div>';
+        return;
+      }
+
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.onclick = () => {
+          window.location.hash = `#/user/${item.id}`;
+        };
+
+        // 列表視圖的稱號微調（刪除後面的「學校」）
+        let listTitle = item.title || "";
+        if (listTitle.endsWith("學校")) {
+          listTitle = listTitle.slice(0, -2);
+        }
+
+        const badgeHTML = listTitle ? `<span class="badge">${listTitle}</span>` : '';
+
+        card.innerHTML = `
+          <img src="${item.imageUrl || 'https://via.placeholder.com/400x200?text=No+Image'}" class="card-img" alt="${item.name}">
+          <div class="card-content">
+            <div class="card-title">${item.name || '未命名'}</div>
+            <div class="card-school">${item.school || '-'} · ${item.brand || '未標記'}</div>
+            ${badgeHTML}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 搜尋功能
+    function handleSearch() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      if (!query) {
+        renderListPage(rawData);
+        return;
+      }
+
+      const filtered = rawData.filter(item => {
+        return (item.name && item.name.toLowerCase().includes(query)) ||
+               (item.school && item.school.toLowerCase().includes(query)) ||
+               (item.brand && item.brand.toLowerCase().includes(query)) ||
+               (item.id && item.id.toLowerCase().includes(query));
+      });
+      renderListPage(filtered);
+    }
+
+    // 渲染詳細資料頁面
+    function renderUserDetailPage(userId) {
+      document.getElementById('list-view').classList.add('hidden');
+      document.getElementById('user-view').classList.remove('hidden');
+
+      // 1. 找出目前點進來的這台飲水機資料
+      const item = rawData.find(u => u.id === userId);
+      if (!item) {
+        document.getElementById('det-name').innerText = "找不到該飲水機資料";
+        return;
+      }
+
+      // 2. 【功能：粉絲數前三名在稱號特別標註】自動將所有資料依粉絲數從大到小排序
+      const sortedData = [...rawData]
+        .filter(u => u.followers !== undefined && u.followers !== null && u.followers !== "")
+        .sort((a, b) => parseInt(b.followers || 0) - parseInt(a.followers || 0));
+
+      const rank = sortedData.findIndex(u => u.id === userId) + 1;
+
+      // 3. 【功能：刪除幹部、成員後面的「學校」】
+      let titleText = item.title || ""; 
+
+      if (titleText.endsWith("學校")) {
+        titleText = titleText.slice(0, -2);
+      }
+
+      // 4. 【功能：粉絲數前三名加上勳章】
+      if (titleText !== "") {
+        if (rank === 1) {
+          titleText = "🥇 冠軍 " + titleText;
+        } else if (rank === 2) {
+          titleText = "🥈 亞軍 " + titleText;
+        } else if (rank === 3) {
+          titleText = "🥉 季軍 " + titleText;
+        }
+      }
+
+      // 5. 【功能：無稱號就空白】填入稱號文字，若無稱號則直接隱藏外框
+      const titleLinkEl = document.getElementById('det-title-link');
+      const titleContainerEl = document.getElementById('det-title-container');
+      
+      if (titleLinkEl && titleContainerEl) {
+        titleLinkEl.innerText = titleText;
+        if (titleText === "") {
+          titleContainerEl.style.display = "none"; // 無稱號就完全空白不顯示框框
+        } else {
+          titleContainerEl.style.display = "inline-block";
+        }
+      }
+
+      // 6. 填入基本的網頁資料與圖片
+      document.getElementById('det-name').innerText = item.name || "未命名飲水機";
+      document.getElementById('det-img').src = item.imageUrl || "https://via.placeholder.com/400x400?text=No+Image";
+
+      // 填入 Threads 帳號
+      const idLink = document.getElementById('det-id-link');
+      if (idLink) {
+        idLink.innerText = "@" + (item.id || "-");
+        if (item.id) {
+          idLink.href = "https://www.threads.net/@" + item.id;
+        } else {
+          idLink.removeAttribute('href');
+        }
+      }
+
+      // 填入地址連結
+      const locLink = document.getElementById('det-location-link');
+      if (locLink) {
+        locLink.innerText = item.location || "未提供詳細地址";
+        if (item.mapUrl) {
+          locLink.href = item.mapUrl;
+          locLink.style.pointerEvents = "auto";
+          locLink.style.textDecoration = "underline";
+        } else {
+          locLink.removeAttribute('href');
+          locLink.style.pointerEvents = "none";
+          locLink.style.textDecoration = "none";
+        }
+      }
+
+      // 填入學校名稱與連結
+      const schoolLink = document.getElementById('det-school-link');
+      if (schoolLink) {
+        schoolLink.innerText = item.school || "-";
+        if (item.schoolUrl) {
+          schoolLink.href = item.schoolUrl;
+          schoolLink.style.pointerEvents = "auto";
+          schoolLink.style.textDecoration = "underline";
+          schoolLink.style.color = "#0066cc";
+        } else {
+          schoolLink.removeAttribute('href');
+          schoolLink.style.pointerEvents = "none";
+          schoolLink.style.textDecoration = "none";
+          schoolLink.style.color = "#1a1a1a";
+        }
+      }
+
+      // 填入品牌名稱
+      const brandLink = document.getElementById('det-brand-link');
+      if (brandLink) {
+        brandLink.innerText = item.brand || "未標記";
+        if (item.brandUrl) {
+          brandLink.href = item.brandUrl;
+        } else {
+          brandLink.removeAttribute('href');
+        }
+      }
+
+      // 填入最新粉絲數量與更新時間
+      const followersEl = document.getElementById('det-followers');
+      if (followersEl) {
+        followersEl.innerText = item.followers || "0";
+      }
+
+      const updateTimeEl = document.getElementById('det-update-time');
+      if (updateTimeEl) {
+        updateTimeEl.innerText = item.updateTime ? "數據更新時間：" + item.updateTime : "";
+      }
+    }
+  </script>
+</body>
+</html>
