@@ -1,4 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全台飲水機觀測站</title>
+    <!-- 📊 線上載入輕量美觀的 Chart.js 繪圖庫 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 精緻的極簡風格全面回歸 */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #fafafa; color: #1a1a1a; line-height: 1.5; }
+        a { color: #0066cc; text-decoration: none; cursor: pointer; }
+        a:hover { text-decoration: underline; }
+        header { background: #ffffff; border-bottom: 1px solid #eaeaea; padding: 15px 20px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: bold; font-size: 1.2rem; }
+        nav a { margin-left: 15px; color: #666; font-size: 0.95rem; }
+        nav a.active { color: #1a1a1a; font-weight: bold; }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .loading { text-align: center; padding: 50px; color: #888; font-size: 1.1rem; }
+        .hidden { display: none !important; }
+        
+        /* 區塊樣式 */
+        .card { background: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
+        h2 { font-size: 1.3rem; margin-bottom: 15px; font-weight: 600; color: #333; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
+        
+        /* 圖表專用容器 */
+        .chart-container { position: relative; margin: auto; height: 320px; width: 100%; display: flex; justify-content: center; }
+        
+        /* 列表與排行樣式 */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
+        .list-item:last-child { border-bottom: none; }
+        .rank-badge { font-weight: bold; margin-right: 10px; color: #888; min-width: 25px; display: inline-block; }
+        .rank-1, .rank-2, .rank-3 { color: #1a1a1a; }
+        .toggle-btn { display: block; width: 100%; text-align: center; padding: 10px; background: #f5f5f5; border: 1px solid #eaeaea; border-radius: 6px; margin-top: 10px; color: #555; font-size: 0.9rem; }
+        
+        /* 詳細頁與社團專用雙欄排版 */
+        .detail-layout { display: flex; flex-direction: column; gap: 24px; }
+        @media(min-width: 768px) { .detail-layout { flex-direction: row; } }
+        .detail-main { flex: 1.2; }
+        .detail-side { flex: 0.8; display: flex; flex-direction: column; gap: 20px; }
+        
+        .detail-name { font-size: 1.6rem; font-weight: bold; margin-bottom: 15px; padding: 12px 15px; background: #f0f0f0; border-radius: 6px; color: #1a1a1a; line-height: 1.4; }
+        .detail-img-container { width: 100%; background: #ffffff; border: 1px solid #eaeaea; border-radius: 6px; overflow: hidden; padding: 10px; text-align: center; }
+        .detail-img { max-width: 100%; max-height: 550px; object-fit: contain; border-radius: 4px; }
+        .detail-address-block { margin-top: 15px; font-size: 1rem; color: #333; background: #fff; border: 1px solid #eaeaea; padding: 12px 15px; border-radius: 6px; }
+        .badge { display: inline-block; padding: 2px 8px; background: #e0f0ff; color: #0066cc; font-size: 0.8rem; font-weight: bold; border-radius: 4px; margin-left: 5px; }
+        
+        /* 舊版精華樣式優化 */
+        .club-header { text-align: center; padding: 30px 0; border-bottom: 2px solid #1a1a1a; margin-bottom: 30px; }
+        .club-header h1 { font-size: 2.2rem; font-weight: bold; color: #1a1a1a; letter-spacing: 1px; }
+        
+        .info-link-block { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; }
+        .info-link-block span { color: #666; width: 60px; display: inline-block; }
+        
+        .mission-list { padding-left: 20px; line-height: 1.8; font-size: 1.05rem; }
+        .mission-list li { margin-bottom: 8px; font-weight: 500; }
+        
+        .exam-btn { display: block; text-align: center; padding: 15px; background: #1a1a1a; color: #ffffff; border-radius: 6px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.2s; }
+        .exam-btn:hover { background: #333; text-decoration: none; }
+    </style>
+</head>
+<body>
 
+    <header>
+        <div class="logo"><a href="#/">飲水機觀測站</a></div>
+        <nav>
+            <a href="#/" id="nav-home">首頁</a>
+            <a href="#/club" id="nav-club">飲水機研究社</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div id="loading-view" class="loading">正在向雲端讀取飲水機即時數據...</div>
+
+        <!-- 🏠 首頁視圖 -->
+        <div id="home-view" class="view hidden">
+            <!-- 1. 全臺飲水機總數 -->
+            <div class="card" style="text-align: center; padding: 40px 20px;">
+                <h1 style="font-size: 3rem; font-weight: bold; color: #1a1a1a;" id="total-count">0 台</h1>
+                <p style="color: #666; margin-top: 5px; font-size: 1.1rem;">全臺飲水機總數</p>
+            </div>
+
+            <!-- 2. 個人粉絲排行榜 (TOP 10) -->
+            <div class="card">
+                <h2>個人粉絲排行榜 (TOP 10)</h2>
+                <div id="personal-ranking-list"></div>
+            </div>
+
+            <!-- 3. 各縣市總數統計 -->
+            <div class="card">
+                <h2>各縣市總數統計</h2>
+                <div id="city-ranking-list"></div>
+                <button id="toggle-city-btn" class="toggle-btn">展開查看全臺名次 ↓</button>
+            </div>
+
+            <!-- 4. 飲水機品牌市佔率 -->
+            <div class="card">
+                <h2>飲水機品牌市佔率</h2>
+                <div class="chart-container">
+                    <canvas id="brandPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📍 縣市列表視圖 -->
+        <div id="city-view" class="view hidden">
+            <h2 id="city-view-title" style="font-size: 1.6rem; border: none; margin-bottom: 20px;">縣市</h2>
+            <div class="card">
+                <div id="city-water-list"></div>
+            </div>
+            <a href="#/">&larr; 返回首頁</a>
+        </div>
+
+        <!-- 🥤 社團總部視圖 -->
+        <div id="club-view" class="view hidden">
+            <div class="club-header">
+                <h1>飲水機研究社第0屆</h1>
+            </div>
+            
+            <div class="detail-layout">
+                <!-- 左側：幹部名單與精神宗旨 -->
+                <div class="detail-main">
+                    <div class="card">
+                        <h2>幹部</h2>
+                        <div id="club-officers-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+                            <!-- 這裡會依序由 JavaScript 動態塞入：社長、副社長、美宣 -->
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>宗旨</h2>
+                        <ul class="mission-list">
+                            <li>1. 飲水機在一起強大</li>
+                            <li>2. 皮炎</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h2>社團成員</h2>
+                        <div id="club-members-list"></div>
+                    </div>
+                </div>
+
+                <!-- 右側：官方資料與互動挑戰 -->
+                <div class="detail-side">
+                    <div class="card">
+                        <h2>官方資料</h2>
+                        <div style="margin-top: 10px;">
+                            <div class="info-link-block">
+                                <span>Threads</span>
+                                <strong><a href="https://www.threads.net/@nwhswater_0th" target="_blank">@nwhswater_0th</a></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>互動挑戰</h2>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSd33j1gp_Zv37m74f-4rOeLYEYtYQPrc7H9MD1YqSqvyxlfnQ/viewform?pli=1" target="_blank" class="exam-btn">第114514屆飲水機研究社測驗試卷</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔍 詳細資料視圖 -->
+        <div id="user-view" class="view hidden">
+            <div class="detail-layout">
+                <div class="detail-main">
+                    <div class="detail-name" id="det-name">飲水機名字</div>
+                    <div class="detail-img-container">
+                        <img src="" alt="飲水機照片" class="detail-img" id="det-img">
+                    </div>
+                    <div class="detail-address-block">
+                        <strong>地址：</strong><a id="det-location-link" target="_blank" style="color: #0066cc; text-decoration: underline;">地址載入中</a>
+                    </div>
+                </div>
+                
+                <div class="detail-side">
+                    <div>
+                        <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">學校</span>
+                        <strong><a id="det-school-link" target="_blank" style="color: #1a1a1a;">-</a></strong>
+                    </div>
+                    <div>
+                        <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">ID</span>
+                        <strong><a id="det-id-link" target="_blank" style="color: #0066cc;">-</a></strong>
+                    </div>
+                    <div>
+                        <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">稱號</span>
+                        <strong id="det-title">-</strong> <span id="club-badge"></span>
+                    </div>
+                    <div>
+                        <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">品牌</span>
+                        <strong><a id="det-brand-link" target="_blank" style="color: #1a1a1a;">-</a></strong>
+                    </div>
+                    <div style="margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 15px;">
+                        <span style="font-size: 0.9rem; color: #666;">最新粉絲數量</span>
+                        <div style="font-size: 2.2rem; font-weight: bold; color: #1a1a1a; margin-top: 2px;" id="det-followers">0</div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">
+                        數據更新時間：<span id="det-time">-</span>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 30px;">
+                <a onclick="window.history.back()">&larr; 返回前一頁</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbyAw_RaACLaX8cTCcHLl3aqGvZrXcn4g-xPB76xgZZxw8_UeoiyGDCzJyy5mZ1tkL0L/exec";
+
+        const ALL_CITIES = [
+            "臺北市", "新北市", "基隆市", "桃園市", "新竹市", "新竹縣", "苗栗縣", "臺中市", 
+            "彰化縣", "南投縣", "雲林縣", "嘉義市", "嘉義縣", "臺南市", "高雄市", "屏東縣", 
+            "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣"
+        ];
+
+        let rawData = [];
+        let showAllCitiesRanking = false;
+        let myPieChart = null;
+
+        function safeDecode(str) {
+            try {
+                return decodeURIComponent(str);
+            } catch (e) {
+                try {
+                    return unescape(str);
+                } catch (err) {
+                    return str;
+                }
+            }
+        }
+
+        function parseFollowersCount(val) {
+            if (!val) return 0;
+            let str = val.toString().toUpperCase().trim();
+            if (str.includes('K')) return parseFloat(str.replace('K', '')) * 1000;
+            if (str.includes('M')) return parseFloat(str.replace('M', '')) * 1000000;
+            let num = parseInt(str.replace(/,/g, ''), 10);
+            return isNaN(num) ? 0 : num;
+        }
+
+        async function fetchInitialData() {
+            try {
+                const res = await fetch(API_URL);
+                rawData = await res.json();
+                document.getElementById('loading-view').classList.add('hidden');
+                handleRouting();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading-view').innerText = "數據讀取失敗，請確認 Apps Script API 連線。";
+            }
+        }
+
+        function handleRouting() {
+            const hash = window.location.hash || '#/';
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('nav a').forEach(n => n.classList.remove('active'));
+
+            if (hash === '#/' || hash === '') {
+                document.getElementById('nav-home').classList.add('active');
+                renderHomePage();
+            } else if (hash === '#/club') {
+                document.getElementById('nav-club').classList.add('active');
+                renderClubPage();
+            } else if (hash.startsWith('#/city/')) {
+                const cityName = safeDecode(hash.substring(7));
+                renderCityPage(cityName);
+            } else if (hash.startsWith('#/user/')) {
+                const userId = safeDecode(hash.substring(7));
+                renderUserDetailPage(userId);
+            }
+        }
+
+        function drawBrandChart() {
+            const brandCounts = {};
+            rawData.forEach(item => {
+                let brandName = item.brand ? item.brand.trim() : "";
+                if (!brandName) brandName = "未標記";
+                brandCounts[brandName] = (brandCounts[brandName] || 0) + 1;
+            });
+
+            const labels = Object.keys(brandCounts);
+            const dataValues = Object.values(brandCounts);
+
+            const backgroundColors = [
+                '#4a7c59', '#68809a', '#bda88a', '#bd8a8a', '#8abdac', 
+                '#a38abd', '#8a9fbd', '#9e9e9e', '#cfb497', '#97b2cf'
+            ];
+
+            const ctx = document.getElementById('brandPieChart').getContext('2d');
+            
+            if (myPieChart) {
+                myPieChart.destroy();
+            }
+
+            myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: backgroundColors.slice(0, labels.length),
+                        borderWidth: 1,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
                             position: 'right',
                             labels: {
                                 font: { size: 13 },
