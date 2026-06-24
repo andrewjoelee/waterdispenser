@@ -194,7 +194,7 @@
     }
     #loading {
       text-align: center;
-      padding: 5px;
+      padding: 20px;
       color: #666;
     }
   </style>
@@ -264,20 +264,18 @@
   </div>
 
   <script>
+    // API 串接核心邏輯與路由
     const API_URL = 'https://script.google.com/macros/s/AKfycbz_W-909N_7b_n50U_pZ9eE7WkQ2CAt137VInWofgBOfwE9A68uLIdnE_E98I_q1f0O/exec';
-
     let rawData = [];
 
     window.addEventListener('DOMContentLoaded', () => {
       fetch(API_URL)
         .then(response => response.json())
         .then(data => {
-          // 欄位防護：確保大寫 ID 和小寫 id 都能順利讀取到
           rawData = data.map(item => {
             if (item.ID && !item.id) item.id = item.ID;
             return item;
           });
-          
           document.getElementById('loading').style.display = 'none';
           handleRouting();
         })
@@ -347,7 +345,6 @@
         renderListPage(rawData);
         return;
       }
-
       const filtered = rawData.filter(item => {
         return (item.name && item.name.toLowerCase().includes(query)) ||
                (item.school && item.school.toLowerCase().includes(query)) ||
@@ -367,30 +364,29 @@
         return;
       }
 
-      // 1. 依照純數字排序計算前三名
+      // 1. 處理前三名排序標註
       const sortedData = [...rawData]
         .filter(u => u.followers !== undefined && u.followers !== null && u.followers !== "")
         .sort((a, b) => parseInt(b.followers || 0) - parseInt(a.followers || 0));
 
       const rank = sortedData.findIndex(u => u.id === userId) + 1;
 
-      // 2. 刪除稱號結尾的「學校」
+      // 2. 處理稱號後面的「學校」字樣
       let titleText = item.title || ""; 
       if (titleText.endsWith("學校")) {
         titleText = titleText.slice(0, -2);
       }
 
-      // 3. 前三名特別標註勳章
+      // 3. 加上冠亞季軍勳章
       if (titleText !== "" && rank > 0 && rank <= 3) {
         if (rank === 1) titleText = "🥇 冠軍 " + titleText;
         if (rank === 2) titleText = "🥈 亞軍 " + titleText;
         if (rank === 3) titleText = "🥉 季軍 " + titleText;
       }
 
-      // 4. 無稱號就完全不顯示背景框
+      // 4. 無稱號時，連同外層背景容器一併隱藏
       const titleLinkEl = document.getElementById('det-title-link');
       const titleContainerEl = document.getElementById('det-title-container');
-      
       if (titleLinkEl && titleContainerEl) {
         titleLinkEl.innerText = titleText;
         if (titleText.trim() === "") {
@@ -400,7 +396,7 @@
         }
       }
 
-      // 5. 渲染網頁基本資料
+      // 5. 填入其餘對齊好的 DOM 元件
       document.getElementById('det-name').innerText = item.name || "未命名飲水機";
       document.getElementById('det-img').src = item.imageUrl || "https://via.placeholder.com/400x400?text=No+Image";
 
@@ -414,7 +410,6 @@
         }
       }
 
-      // 修正點：抓取欄位改為 det-location-link，避免網頁出錯
       const locLink = document.getElementById('det-location-link');
       if (locLink) {
         locLink.innerText = item.location || "未提供詳細地址";
