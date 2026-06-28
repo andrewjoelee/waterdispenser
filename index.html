@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全台飲水機觀測站</title>
+    <!-- 📊 線上載入輕量美觀的 Chart.js 繪圖庫 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* 精緻的極簡風格全面回歸 */
@@ -57,6 +58,17 @@
         
         .exam-btn { display: block; text-align: center; padding: 15px; background: #1a1a1a; color: #ffffff; border-radius: 6px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.2s; }
         .exam-btn:hover { background: #333; text-decoration: none; }
+
+        /* 🔍 全部總覽頁面專用樣式 */
+        .search-filter-bar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        @media(min-width: 576px) { .search-filter-bar { flex-direction: row; } }
+        .search-input { flex: 1; padding: 10px 15px; border: 1px solid #eaeaea; border-radius: 6px; font-size: 1rem; outline: none; transition: border-color 0.2s; }
+        .search-input:focus { border-color: #0066cc; }
+        .sort-select { padding: 10px 15px; border: 1px solid #eaeaea; border-radius: 6px; font-size: 1rem; background-color: #ffffff; cursor: pointer; outline: none; }
+        .sort-select:focus { border-color: #0066cc; }
+        .all-water-list { display: flex; flex-direction: column; gap: 12px; }
+        .water-card-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; transition: transform 0.2s, box-shadow 0.2s; }
+        .water-card-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -65,6 +77,7 @@
         <div class="logo"><a href="#/">飲水機觀測站</a></div>
         <nav>
             <a href="#/" id="nav-home">首頁</a>
+            <a href="#/all" id="nav-all">全部總覽</a>
             <a href="#/club" id="nav-club">飲水機研究社</a>
         </nav>
     </header>
@@ -72,23 +85,28 @@
     <div class="container">
         <div id="loading-view" class="loading">正在向雲端讀取飲水機即時數據...</div>
 
+        <!-- 🏠 首頁視圖 -->
         <div id="home-view" class="view hidden">
+            <!-- 1. 全臺飲水機總數 -->
             <div class="card" style="text-align: center; padding: 40px 20px;">
                 <h1 style="font-size: 3rem; font-weight: bold; color: #1a1a1a;" id="total-count">0 台</h1>
                 <p style="color: #666; margin-top: 5px; font-size: 1.1rem;">全臺飲水機總數</p>
             </div>
 
+            <!-- 2. 個人粉絲排行榜 (TOP 10) -->
             <div class="card">
                 <h2>個人粉絲排行榜 (TOP 10)</h2>
                 <div id="personal-ranking-list"></div>
             </div>
 
+            <!-- 3. 各縣市總數統計 -->
             <div class="card">
                 <h2>各縣市總數統計</h2>
                 <div id="city-ranking-list"></div>
                 <button id="toggle-city-btn" class="toggle-btn">展開查看全臺名次 ↓</button>
             </div>
 
+            <!-- 4. 飲水機品牌市佔率 -->
             <div class="card">
                 <h2>飲水機品牌市佔率</h2>
                 <div class="chart-container">
@@ -97,6 +115,25 @@
             </div>
         </div>
 
+        <!-- 🔍 全部總覽視圖 -->
+        <div id="all-view" class="view hidden">
+            <h2 style="font-size: 1.6rem; border: none; margin-bottom: 15px;">全台飲水機總覽</h2>
+            
+            <div class="search-filter-bar">
+                <input type="text" id="all-search-input" class="search-input" placeholder="輸入關鍵字搜尋名稱、學校、縣市或品牌...">
+                <select id="all-sort-select" class="sort-select">
+                    <option value="followers-desc">粉絲數量：由多到少</option>
+                    <option value="followers-asc">粉絲數量：由少到多</option>
+                    <option value="join-asc">加入時間：由舊到新</option>
+                    <option value="join-desc">加入時間：由新到舊</option>
+                    <option value="distance-asc">距離遠近：離我最近校門口 (需定位)</option>
+                </select>
+            </div>
+
+            <div id="all-water-list-container" class="all-water-list"></div>
+        </div>
+
+        <!-- 📍 縣市列表視圖 -->
         <div id="city-view" class="view hidden">
             <h2 id="city-view-title" style="font-size: 1.6rem; border: none; margin-bottom: 20px;">縣市</h2>
             <div class="card">
@@ -105,6 +142,7 @@
             <a href="#/">&larr; 返回首頁</a>
         </div>
 
+        <!-- 🥤 社團總部視圖 -->
         <div id="club-view" class="view hidden">
             <div class="club-header">
                 <h1>飲水機研究社第0屆</h1>
@@ -114,8 +152,7 @@
                 <div class="detail-main">
                     <div class="card">
                         <h2>幹部</h2>
-                        <div id="club-officers-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
-                            </div>
+                        <div id="club-officers-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;"></div>
                     </div>
 
                     <div class="card">
@@ -151,6 +188,7 @@
             </div>
         </div>
 
+        <!-- 🔍 詳細資料視圖 -->
         <div id="user-view" class="view hidden">
             <div class="detail-layout">
                 <div class="detail-main">
@@ -207,17 +245,10 @@
         let rawData = [];
         let showAllCitiesRanking = false;
         let myPieChart = null;
+        let userLocation = null; // 儲存使用者的 GPS 經緯度
 
         function safeDecode(str) {
-            try {
-                return decodeURIComponent(str);
-            } catch (e) {
-                try {
-                    return unescape(str);
-                } catch (err) {
-                    return str;
-                }
-            }
+            try { return decodeURIComponent(str); } catch (e) { try { return unescape(str); } catch (err) { return str; } }
         }
 
         function parseFollowersCount(val) {
@@ -227,6 +258,18 @@
             if (str.includes('M')) return parseFloat(str.replace('M', '')) * 1000000;
             let num = parseInt(str.replace(/,/g, ''), 10);
             return isNaN(num) ? 0 : num;
+        }
+
+        // 📐 使用 Haversine 公式計算使用者與學校校門口的直線距離 (公里)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            if (!lat1 || !lon1 || !lat2 || !lon2) return null;
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
         }
 
         async function fetchInitialData() {
@@ -249,6 +292,9 @@
             if (hash === '#/' || hash === '') {
                 document.getElementById('nav-home').classList.add('active');
                 renderHomePage();
+            } else if (hash === '#/all') {
+                document.getElementById('nav-all').classList.add('active');
+                renderAllPage();
             } else if (hash === '#/club') {
                 document.getElementById('nav-club').classList.add('active');
                 renderClubPage();
@@ -271,52 +317,20 @@
 
             const labels = Object.keys(brandCounts);
             const dataValues = Object.values(brandCounts);
-
-            const backgroundColors = [
-                '#4a7c59', '#68809a', '#bda88a', '#bd8a8a', '#8abdac', 
-                '#a38abd', '#8a9fbd', '#9e9e9e', '#cfb497', '#97b2cf'
-            ];
-
+            const backgroundColors = ['#4a7c59', '#68809a', '#bda88a', '#bd8a8a', '#8abdac', '#a38abd', '#8a9fbd', '#9e9e9e', '#cfb497', '#97b2cf'];
             const ctx = document.getElementById('brandPieChart').getContext('2d');
-            
-            if (myPieChart) {
-                myPieChart.destroy();
-            }
+            if (myPieChart) myPieChart.destroy();
 
             myPieChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        data: dataValues,
-                        backgroundColor: backgroundColors.slice(0, labels.length),
-                        borderWidth: 1,
-                        borderColor: '#ffffff'
-                    }]
+                    datasets: [{ data: dataValues, backgroundColor: backgroundColors.slice(0, labels.length), borderWidth: 1, borderColor: '#ffffff' }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                font: { size: 13 },
-                                boxWidth: 15
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    let value = context.raw || 0;
-                                    let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    let percentage = Math.round((value / total) * 100);
-                                    return ` ${label}: ${value} 台 (${percentage}%)`;
-                                }
-                            }
-                        }
-                    }
+                    plugins: { legend: { position: 'right', labels: { font: { size: 13 }, boxWidth: 15 } }, tooltip: { callbacks: { label: function(context) { let label = context.label || ''; let value = context.raw || 0; let total = context.dataset.data.reduce((a, b) => a + b, 0); let percentage = Math.round((value / total) * 100); return ` ${label}: ${value} 台 (${percentage}%)`; } } } }
                 }
             });
         }
@@ -324,7 +338,6 @@
         function renderHomePage() {
             document.getElementById('home-view').classList.remove('hidden');
             document.getElementById('total-count').innerText = `${rawData.length} 台`;
-
             drawBrandChart();
 
             const personalSorted = [...rawData].sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
@@ -338,7 +351,7 @@
                     <div style="font-weight:600;">${item.followers} 粉絲</div>
                 </div>
             `).join('');
-            document.getElementById('personal-ranking-list').innerHTML = personalListHtml || '<div style="color:#aaa;">目​​前尚無資料</div>';
+            document.getElementById('personal-ranking-list').innerHTML = personalListHtml || '<div style="color:#aaa;">目前尚無資料</div>';
 
             const cityCounts = {};
             ALL_CITIES.forEach(c => cityCounts[c] = 0);
@@ -364,6 +377,120 @@
             renderHomePage();
         });
 
+        // 🚀 全部總覽頁面控制邏輯
+        function renderAllPage() {
+            document.getElementById('all-view').classList.remove('hidden');
+            
+            const searchInput = document.getElementById('all-search-input');
+            const sortSelect = document.getElementById('all-sort-select');
+
+            sortSelect.removeEventListener('change', handleSortChange);
+            sortSelect.addEventListener('change', handleSortChange);
+            
+            searchInput.removeEventListener('input', updateAllList);
+            searchInput.addEventListener('input', updateAllList);
+
+            if (sortSelect.value === 'distance-asc' && !userLocation) {
+                requestUserLocation();
+            } else {
+                updateAllList();
+            }
+        }
+
+        function handleSortChange() {
+            if (this.value === 'distance-asc' && !userLocation) {
+                requestUserLocation();
+            } else {
+                updateAllList();
+            }
+        }
+
+        function requestUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+                        updateAllList();
+                    },
+                    (error) => {
+                        alert("無法取得您的定位，距離排序將暫時失效。");
+                        document.getElementById('all-sort-select').value = "followers-desc";
+                        updateAllList();
+                    }
+                );
+            } else {
+                alert("您的瀏覽器不支援定位功能。");
+                document.getElementById('all-sort-select').value = "followers-desc";
+                updateAllList();
+            }
+        }
+
+        function updateAllList() {
+            const query = document.getElementById('all-search-input').value.toLowerCase().trim();
+            const sortBy = document.getElementById('all-sort-select').value;
+            const container = document.getElementById('all-water-list-container');
+
+            let filtered = rawData.filter((item, index) => {
+                item._originalIndex = index; 
+                const name = (item.name || "").toLowerCase();
+                const school = (item.school || "").toLowerCase();
+                const city = (item.city || "").toLowerCase();
+                const brand = (item.brand || "").toLowerCase();
+                const id = (item.id || "").toLowerCase();
+                return name.includes(query) || school.includes(query) || city.includes(query) || brand.includes(query) || id.includes(query);
+            });
+
+            filtered.sort((a, b) => {
+                const followersA = parseFollowersCount(a.followers);
+                const followersB = parseFollowersCount(b.followers);
+
+                if (sortBy === 'followers-desc') return followersB - followersA;
+                if (sortBy === 'followers-asc') return followersA - followersB;
+                if (sortBy === 'join-asc') return a._originalIndex - b._originalIndex;
+                if (sortBy === 'join-desc') return b._originalIndex - a._originalIndex;
+                
+                if (sortBy === 'distance-asc') {
+                    if (!userLocation) return 0;
+                    const distA = calculateDistance(userLocation.lat, userLocation.lng, parseFloat(a.lat), parseFloat(a.lng));
+                    const distB = calculateDistance(userLocation.lat, userLocation.lng, parseFloat(b.lat), parseFloat(b.lng));
+                    if (distA === null) return 1;
+                    if (distB === null) return -1;
+                    return distA - distB;
+                }
+                return 0;
+            });
+
+            let html = "";
+            if (filtered.length === 0) {
+                html = `<div style="color:#aaa; text-align:center; padding:30px;">找不到符合關鍵字的飲水機。</div>`;
+            } else {
+                html = filtered.map(item => {
+                    let distStr = "";
+                    if (userLocation && item.lat && item.lng) {
+                        const d = calculateDistance(userLocation.lat, userLocation.lng, parseFloat(item.lat), parseFloat(item.lng));
+                        distStr = d !== null ? `<span style="font-size:0.85rem; color:#0066cc; background:#e0f0ff; padding:2px 6px; border-radius:4px; margin-left:8px;">📍 離校門口 ${d.toFixed(1)} km</span>` : "";
+                    }
+
+                    return `
+                        <div class="water-card-item">
+                            <div>
+                                <a href="#/user/${encodeURIComponent(item.id)}" style="font-weight:600; font-size:1.1rem;">${item.name || '未命名'}</a>
+                                ${distStr}
+                                <div style="font-size:0.85rem; color:#666; margin-top:4px;">
+                                    ${item.school} ｜ ${item.city} ｜ 品牌：${item.brand || '未標記'}
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-weight:bold; color:#1a1a1a; font-size:1.1rem;">${item.followers}</div>
+                                <div style="font-size:0.75rem; color:#888;">Threads 粉絲</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            container.innerHTML = html;
+        }
+
         function renderCityPage(cityName) {
             document.getElementById('city-view').classList.remove('hidden');
             document.getElementById('city-view-title').innerText = `📍 ${cityName}`;
@@ -371,43 +498,29 @@
             const cityItems = rawData.filter(item => item.city === cityName);
             cityItems.sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
 
-            let html = "";
-            if (cityItems.length === 0) {
-                html = `<div style="color:#aaa; text-align:center; padding:30px;">目前該縣市尚未有飲水機資料。</div>`;
-            } else {
-                html = cityItems.map((item, idx) => `
-                    <div class="list-item">
-                        <div>
-                            <span class="rank-badge ${idx < 3 ? 'rank-' + (idx + 1) : ''}">${idx + 1}</span>
-                            <a href="#/user/${encodeURIComponent(item.id)}" style="font-weight:600; font-size:1.1rem;">${item.name || '未命名'}</a>
-                            <div style="font-size:0.85rem; color:#666; margin-top:3px;">@${item.id} ｜ ${item.school}</div>
-                        </div>
-                        <div style="font-weight:bold; color:#333;">${item.followers} 粉絲</div>
+            let html = cityItems.length === 0 ? `<div style="color:#aaa; text-align:center; padding:30px;">目前該縣市尚未有飲水機資料。</div>` : cityItems.map((item, idx) => `
+                <div class="list-item">
+                    <div>
+                        <span class="rank-badge ${idx < 3 ? 'rank-' + (idx + 1) : ''}">${idx + 1}</span>
+                        <a href="#/user/${encodeURIComponent(item.id)}" style="font-weight:600; font-size:1.1rem;">${item.name || '未命名'}</a>
+                        <div style="font-size:0.85rem; color:#666; margin-top:3px;">@${item.id} ｜ ${item.school}</div>
                     </div>
-                `).join('');
-            }
+                    <div style="font-weight:bold; color:#333;">${item.followers} 粉絲</div>
+                </div>
+            `).join('');
             document.getElementById('city-water-list').innerHTML = html;
         }
 
         function renderClubPage() {
             document.getElementById('club-view').classList.remove('hidden');
-
             const officers = rawData.filter(item => item.clubRole && item.clubRole.trim() !== "");
-            
             const roleOrder = { "社長": 1, "副社長": 2, "美宣": 3 };
-            officers.sort((a, b) => {
-                let rA = roleOrder[a.clubRole.trim()] || 99;
-                let rB = roleOrder[b.clubRole.trim()] || 99;
-                return rA - rB;
-            });
+            officers.sort((a, b) => (roleOrder[a.clubRole.trim()] || 99) - (roleOrder[b.clubRole.trim()] || 99));
 
-            // 🔄 修改1：這裡已將原本右側的學校名稱整行刪除！
             const officersHtml = officers.map(o => `
                 <div style="padding: 12px 15px; background: #fafafa; border: 1px solid #eaeaea; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <span style="font-weight: bold; color: ${o.clubRole.trim() === '社長' ? '#b58900' : o.clubRole.trim() === '副社長' ? '#586e75' : '#0066cc'}; margin-right: 10px;">
-                            ${o.clubRole}
-                        </span>
+                        <span style="font-weight: bold; color: ${o.clubRole.trim() === '社長' ? '#b58900' : o.clubRole.trim() === '副社長' ? '#586e75' : '#0066cc'}; margin-right: 10px;">${o.clubRole}</span>
                         <a href="#/user/${encodeURIComponent(o.id)}" style="font-weight: 600;">${o.name || o.id}</a>
                     </div>
                 </div>
@@ -417,7 +530,6 @@
             const members = rawData.filter(item => item.isClub === "慢" || item.isClub === "是");
             members.sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
 
-            // 🔄 修改5：將名字後面的學校括號完全移除
             const membersHtml = members.map((m, idx) => `
                 <div class="list-item">
                     <div>
@@ -432,95 +544,40 @@
 
         function renderUserDetailPage(userId) {
             document.getElementById('user-view').classList.remove('hidden');
-
             const item = rawData.find(u => u.id === userId);
-          
-            if (!item) {
-                document.getElementById('det-name').innerText = "找不到該飲水機資料";
-                return;
-            }
+            if (!item) { document.getElementById('det-name').innerText = "找不到該飲水機資料"; return; }
 
             document.getElementById('det-name').innerText = item.name || "未命名飲水機";
             document.getElementById('det-img').src = item.imageUrl || "https://via.placeholder.com/400x400?text=No+Image";
 
             const locLink = document.getElementById('det-location-link');
             locLink.innerText = item.location || "未提供詳細地址";
-
-            if (item.mapUrl) {
-                locLink.href = item.mapUrl;
-                locLink.style.pointerEvents = "auto";
-                locLink.style.textDecoration = "underline";
-            } else {
-                locLink.removeAttribute('href');
-                locLink.style.pointerEvents = "none";
-                locLink.style.textDecoration = "none";
-            }
+            if (item.mapUrl) { locLink.href = item.mapUrl; locLink.style.pointerEvents = "auto"; locLink.style.textDecoration = "underline"; } else { locLink.removeAttribute('href'); locLink.style.pointerEvents = "none"; locLink.style.textDecoration = "none"; }
 
             const schoolLink = document.getElementById('det-school-link');
             schoolLink.innerText = item.school || "-";
-            if (item.schoolUrl) {
-                schoolLink.href = item.schoolUrl;
-                schoolLink.style.textDecoration = "underline";
-                schoolLink.style.color = "#0066cc";
-            } else {
-                schoolLink.removeAttribute('href');
-                schoolLink.style.textDecoration = "none";
-                schoolLink.style.color = "#1a1a1a";
-            }
+            if (item.schoolUrl) { schoolLink.href = item.schoolUrl; schoolLink.style.textDecoration = "underline"; schoolLink.style.color = "#0066cc"; } else { schoolLink.removeAttribute('href'); schoolLink.style.textDecoration = "none"; schoolLink.style.color = "#1a1a1a"; }
             
             const brandLink = document.getElementById('det-brand-link');
             brandLink.innerText = item.brand || "未標記";
-            if (item.brandUrl) {
-                brandLink.href = item.brandUrl;
-                brandLink.style.textDecoration = "underline";
-                brandLink.style.color = "#0066cc";
-                brandLink.style.pointerEvents = "auto";
-            } else {
-                brandLink.removeAttribute('href');
-                brandLink.style.textDecoration = "none";
-                brandLink.style.color = "#1a1a1a";
-                brandLink.style.pointerEvents = "none";
-            }
+            if (item.brandUrl) { brandLink.href = item.brandUrl; brandLink.style.textDecoration = "underline"; brandLink.style.color = "#0066cc"; brandLink.style.pointerEvents = "auto"; } else { brandLink.removeAttribute('href'); brandLink.style.textDecoration = "none"; brandLink.style.color = "#1a1a1a"; brandLink.style.pointerEvents = "none"; }
             
             const linkEl = document.getElementById('det-id-link');
-            linkEl.innerText = `@${item.id}`;
-            linkEl.href = `https://www.threads.net/@${item.id}`;
+            linkEl.innerText = `@${item.id}`; linkEl.href = `https://www.threads.net/@${item.id}`;
 
-            // 🔄 修改3, 4, 6：稱號與職位依指定順序重新排序（職位放第一、名次放第二、自訂放第三）並強制換行
-            
-            // 1. 處理社團職位 (第一順位)
             let roleText = "";
-            if (item.clubRole) {
-                roleText = `<span class="badge">👑 社團${item.clubRole}</span>`;
-            } else if (item.isClub === "是" || item.isClub === "慢") {
-                roleText = `<span class="badge">🥤 社團成員</span>`;
-            }
+            if (item.clubRole) { roleText = `<span class="badge">👑 社團${item.clubRole}</span>`; } else if (item.isClub === "是" || item.isClub === "慢") { roleText = `<span class="badge">🥤 社團成員</span>`; }
 
-            // 2. 處理粉絲數名次 (第二順位)
             const sortedData = [...rawData].sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
             const rankIndex = sortedData.findIndex(u => u.id === userId);
-            
-            let rankText = "";
-            if (rankIndex === 0) {
-                rankText = "🥇 粉絲數冠軍";
-            } else if (rankIndex === 1) {
-                rankText = "🥈 粉絲數亞軍";
-            } else if (rankIndex === 2) {
-                rankText = "🥉 粉絲數季軍";
-            }
+            let rankText = rankIndex === 0 ? "🥇 粉絲數冠軍" : rankIndex === 1 ? "🥈 粉絲數亞軍" : rankIndex === 2 ? "🥉 粉絲數季軍" : "";
 
-            // 3. 處理自訂稱號 (第三順位)
-            const customTitle = item.title || "";
-
-            // 🚀 將存在的項目依序放入陣列，並使用 <br> 換行連結
             const titleParts = [];
             if (roleText) titleParts.push(roleText);
             if (rankText) titleParts.push(rankText);
-            if (customTitle && customTitle !== "無") titleParts.push(customTitle);
+            if (item.title && item.title !== "無") titleParts.push(item.title);
 
-            // 渲染到稱號區塊
             document.getElementById('det-title').innerHTML = titleParts.length > 0 ? titleParts.join('<br>') : "無";
-            
             document.getElementById('det-followers').innerText = item.followers || "0";
             document.getElementById('det-time').innerText = item.updateTime || "-";
         }
