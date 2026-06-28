@@ -15,7 +15,8 @@ THREADS_ACCOUNTS = [
 "waterdispenserylshlinfeng2f2nd",
 "ymhs_waterdispenser",
 "fhsh_waterdispenser",
-"waterdispenser_wlsh_zhuqing1"] 
+"waterdispenser_wlsh_zhuqing1",
+"tcfsh.water.nya"] 
 
 
 def get_threads_follower(page, username):
