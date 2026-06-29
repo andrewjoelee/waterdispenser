@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>飲水機觀測站</title>
-    <!-- 📊 線上載入輕量美觀的 Chart.js 繪圖庫 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* 精緻的極簡風格全面回歸 */
@@ -85,28 +84,23 @@
     <div class="container">
         <div id="loading-view" class="loading">正在向雲端讀取飲水機即時數據...</div>
 
-        <!-- 🏠 首頁視圖 -->
         <div id="home-view" class="view hidden">
-            <!-- 1. 全臺飲水機總數 -->
             <div class="card" style="text-align: center; padding: 40px 20px;">
                 <h1 style="font-size: 3rem; font-weight: bold; color: #1a1a1a;" id="total-count">0 台</h1>
                 <p style="color: #666; margin-top: 5px; font-size: 1.1rem;">全臺飲水機總數</p>
             </div>
 
-            <!-- 2. 個人粉絲排行榜 (TOP 10) -->
             <div class="card">
                 <h2>個人粉絲排行榜 (TOP 10)</h2>
                 <div id="personal-ranking-list"></div>
             </div>
 
-            <!-- 3. 各縣市總數統計 -->
             <div class="card">
                 <h2>各縣市總數統計</h2>
                 <div id="city-ranking-list"></div>
                 <button id="toggle-city-btn" class="toggle-btn">展開查看全臺名次 ↓</button>
             </div>
 
-            <!-- 4. 飲水機品牌市佔率 -->
             <div class="card">
                 <h2>飲水機品牌市佔率</h2>
                 <div class="chart-container">
@@ -115,7 +109,6 @@
             </div>
         </div>
 
-        <!-- 🔍 全部總覽視圖 -->
         <div id="all-view" class="view hidden">
             <h2 style="font-size: 1.6rem; border: none; margin-bottom: 15px;">飲水機總覽</h2>
             
@@ -133,7 +126,6 @@
             <div id="all-water-list-container" class="all-water-list"></div>
         </div>
 
-        <!-- 📍 縣市列表視圖 -->
         <div id="city-view" class="view hidden">
             <h2 id="city-view-title" style="font-size: 1.6rem; border: none; margin-bottom: 20px;">縣市</h2>
             <div class="card">
@@ -142,7 +134,6 @@
             <a href="#/">&larr; 返回首頁</a>
         </div>
 
-        <!-- 🥤 社團總部視圖 -->
         <div id="club-view" class="view hidden">
             <div class="club-header">
                 <h1>飲水機研究社第0屆</h1>
@@ -188,7 +179,6 @@
             </div>
         </div>
 
-        <!-- 🔍 詳細資料視圖 -->
         <div id="user-view" class="view hidden">
             <div class="detail-layout">
                 <div class="detail-main">
@@ -234,7 +224,9 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbyAw_RaACLaX8cTCcHLl3aqGvZrXcn4g-xPB76xgZZxw8_UeoiyGDCzJyy5mZ1tkL0L/exec";
+        // 🔐 改用 Supabase API 設定
+        const SUPABASE_URL = "https://azezhxlatzfgltzqguoa.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_FPMDx4PO77A99RzoVbs3XQ_P9R5aOFP";
 
         const ALL_CITIES = [
             "臺北市", "新北市", "基隆市", "桃園市", "新竹市", "新竹縣", "苗栗縣", "臺中市", 
@@ -272,15 +264,46 @@
             return R * c;
         }
 
+        // 🚀 將 fetchInitialData 核心改為讀取 Supabase 並映射為舊版屬性
         async function fetchInitialData() {
             try {
-                const res = await fetch(API_URL);
-                rawData = await res.json();
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/water_dispensers?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                
+                if (!res.ok) throw new Error("API連線失敗");
+                
+                const supabaseData = await res.json();
+                
+                // 🎯 核心轉換：將 Supabase 17 欄位精準映射為你原本的舊版變數名稱
+                rawData = supabaseData.map(item => ({
+                    id: item.threads_id || "",
+                    name: item.name || "",
+                    title: item.nickname || "", // 舊版的 title 對應新版的 nickname
+                    brand: item.brand || "",
+                    brandUrl: item.brand_website || "",
+                    city: item.city || "",
+                    school: item.school_name || "", // 舊版的 school 對應新版的 school_name
+                    schoolUrl: item.school_website || "",
+                    location: item.address || "", // 舊版的 location 對應新版的 address
+                    mapUrl: item.google_map_url || "",
+                    lat: item.lat || null,
+                    lng: item.lng || null,
+                    isClub: item.is_club || "",
+                    clubRole: item.club_role || "",
+                    imageUrl: item.image_url || "",
+                    followers: item.followers || 0,
+                    updateTime: item.last_updated_time || "" // 舊版的 updateTime 對應新版的 last_updated_time
+                }));
+
                 document.getElementById('loading-view').classList.add('hidden');
                 handleRouting();
             } catch (err) {
                 console.error(err);
-                document.getElementById('loading-view').innerText = "數據讀取失敗，請確認 Apps Script API 連線。";
+                document.getElementById('loading-view').innerText = "數據讀取失敗，請確認 Supabase API 連線狀態。";
             }
         }
 
