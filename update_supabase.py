@@ -29,47 +29,45 @@ def parse_followers_to_int(val):
         print(f"⚠️ 數字轉換失敗 ({val}): {e}")
         return 0
 
-def fetch_threads_followers(threads_id):
-    url = f"https://www.threads.net/@{threads_id}"
-    # 模擬極度真實的現代瀏覽器 Header，防止被 Threads 阻擋
+def fetch_threads_followers(threads_account_id):
+    url = f"https://www.threads.net/@{threads_account_id}"
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
         "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Cache-Control": "max-age=0"
     }
     try:
         response = requests.get(url, headers=headers, timeout=15)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # 策略 1：先抓常規的 og:description
+            # 策略 1：撈 meta
             meta_tag = soup.find('meta', property='og:description')
             if meta_tag:
                 desc = meta_tag.get('content', '')
-                # 用正則表達式把「數字+粉絲/followers」直接撈出來
                 match = re.search(r'([0-9\.,KkMm]+)\s*(?:followers|名粉絲|位粉絲|follower)', desc)
                 if match:
                     return match.group(1).strip()
             
-            # 策略 2：如果被改版擋掉，直接大範圍搜尋整個網頁原始碼裡的「粉絲」關鍵字欄位
+            # 策略 2：直接撈網頁底層變數
             html_str = response.text
             match_fallback = re.search(r'"follower_count":\s*([0-9]+)', html_str)
             if match_fallback:
                 return match_fallback.group(1).strip()
                 
-            # 策略 3：針對中文網頁的強硬比對
+            # 策略 3：中文粗暴比對
             match_zh = re.search(r'([0-9\.,KkMm]+)(?:名粉絲|位粉絲)', html_str)
             if match_zh:
                 return match_zh.group(1).strip()
                 
         return None
     except Exception as e:
-        print(f"💥 爬取 @{threads_id} 出錯: {e}")
+        print(f"💥 爬取 @{threads_account_id} 出錯: {e}")
         return None
 
 def main():
     print("🔄 開始自 Supabase 讀取目前飲水機清單...")
-    response = supabase.table("water_dispensers").select("id, threads_id").execute()
+    # 只需要拿 id 欄位就可以了，因為 id 就是真正的 Threads 帳號
+    response = supabase.table("water_dispensers").select("id").execute()
     items = response.data
     
     if not items:
@@ -77,12 +75,11 @@ def main():
         return
 
     for item in items:
-        record_id = item['id']
-        # 如果欄位裡沒有特別寫 threads_id，就拿原本的 id 當作帳號
-        threads_id = item['threads_id'] if item.get('threads_id') else record_id
+        # 💡 關鍵修正：真正的 Threads 帳號就是你的 id 欄位
+        threads_account_id = item['id']
         
-        print(f"🔎 正在爬取 @{threads_id} 的最新 Threads 數據...")
-        raw_followers = fetch_threads_followers(threads_id)
+        print(f"🔎 正在爬取 @{threads_account_id} 的最新 Threads 數據...")
+        raw_followers = fetch_threads_followers(threads_account_id)
         
         if raw_followers is not None:
             int_followers = parse_followers_to_int(raw_followers)
@@ -90,19 +87,19 @@ def main():
             
             current_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             
-            # 🚀 寫入 Supabase
+            # 🚀 依據 id 寫回正確的資料列
             supabase.table("water_dispensers") \
                 .update({
                     "followers": int_followers, 
                     "last_updated_time": current_time
                 }) \
-                .eq("id", record_id) \
+                .eq("id", threads_account_id) \
                 .execute()
-            print(f"✅ @{threads_id} 雲端數據同步成功！")
+            print(f"✅ @{threads_account_id} 雲端數據同步成功！")
         else:
-            print(f"⚠️ 無法取得 @{threads_id} 數據，跳過不更新")
+            print(f"⚠️ 無法取得 @{threads_account_id} 數據，跳過不更新")
             
-        time.sleep(5) # 稍微拉長間隔，防止被連鎖封鎖
+        time.sleep(5)
 
 if __name__ == "__main__":
     main()
