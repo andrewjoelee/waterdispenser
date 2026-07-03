@@ -91,8 +91,9 @@
             </div>
 
             <div class="card">
-                <h2>個人粉絲排行榜 (TOP 10)</h2>
+                <h2>個人粉絲排行榜</h2>
                 <div id="personal-ranking-list"></div>
+                <button id="toggle-personal-btn" class="toggle-btn">展開查看全臺排行 ↓</button>
             </div>
 
             <div class="card">
@@ -235,6 +236,7 @@
         ];
 
         let rawData = [];
+        let showAllPersonalRanking = false; // 控制個人排行的展開狀態
         let showAllCitiesRanking = false;
         let myPieChart = null;
         let userLocation = null; // 儲存使用者的 GPS 經緯度
@@ -363,8 +365,10 @@
             document.getElementById('total-count').innerText = `${rawData.length} 台`;
             drawBrandChart();
 
+            // 🏆 個人粉絲排行榜控制邏輯
             const personalSorted = [...rawData].sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
-            const personalListHtml = personalSorted.slice(0, 10).map((item, idx) => `
+            const displayPersonalLimit = showAllPersonalRanking ? personalSorted.length : 10;
+            const personalListHtml = personalSorted.slice(0, displayPersonalLimit).map((item, idx) => `
                 <div class="list-item">
                     <div>
                         <span class="rank-badge ${idx < 3 ? 'rank-' + (idx + 1) : ''}">${idx + 1}</span>
@@ -375,7 +379,9 @@
                 </div>
             `).join('');
             document.getElementById('personal-ranking-list').innerHTML = personalListHtml || '<div style="color:#aaa;">目前尚無資料</div>';
+            document.getElementById('toggle-personal-btn').innerText = showAllPersonalRanking ? "收起全臺排行 ↑" : "展開查看全臺排行 ↓";
 
+            // 🏙️ 各縣市總數統計控制邏輯
             const cityCounts = {};
             ALL_CITIES.forEach(c => cityCounts[c] = 0);
             rawData.forEach(item => { if (cityCounts[item.city] !== undefined) cityCounts[item.city]++; });
@@ -395,6 +401,13 @@
             document.getElementById('toggle-city-btn').innerText = showAllCitiesRanking ? "收起全臺名次 ↑" : "展開查看全臺名次 ↓";
         }
 
+        // 個人排行按鈕事件監聽[cite: 1]
+        document.getElementById('toggle-personal-btn').addEventListener('click', () => {
+            showAllPersonalRanking = !showAllPersonalRanking;
+            renderHomePage();
+        });
+
+        // 縣市統計按鈕事件監聽[cite: 1]
         document.getElementById('toggle-city-btn').addEventListener('click', () => {
             showAllCitiesRanking = !showAllCitiesRanking;
             renderHomePage();
