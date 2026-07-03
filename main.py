@@ -23,8 +23,8 @@ SUPABASE_URL = "https://azezhxlatzfgltzqguoa.supabase.co"
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 # 📌 官方驗證貼文網址（請填入你實際的貼文網址）
-OFFICIAL_THREADS_URL = "https://www.threads.net/@waterdispenserylshlinfeng2f2nd/post/XXXXXX"
-OFFICIAL_IG_URL = "https://www.instagram.com/p/XXXXXX/"
+OFFICIAL_THREADS_URL = "https://www.threads.com/@waterdispenserylshlinfeng2f2nd/post/DPRs0nbkzTf"
+OFFICIAL_IG_URL = "https://www.instagram.com/p/DO9stkpE2bX/"
 
 # =====================================================================
 # 🕷️ Playwright 雲端爬蟲核心（專為 Linux 伺服器優化的設定）
