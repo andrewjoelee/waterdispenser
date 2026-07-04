@@ -23,6 +23,13 @@
         .card { background: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
         h2 { font-size: 1.3rem; margin-bottom: 15px; font-weight: 600; color: #333; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
         
+        /* 縣市與市佔率並排專用彈性排版 */
+        .home-grid-layout { display: flex; flex-direction: column; gap: 20px; margin-bottom: 25px; }
+        @media(min-width: 768px) { 
+            .home-grid-layout { flex-direction: row; }
+            .home-grid-layout .card { flex: 1; margin-bottom: 0; }
+        }
+
         /* 圖表專用容器 */
         .chart-container { position: relative; margin: auto; height: 320px; width: 100%; display: flex; justify-content: center; }
         
@@ -39,7 +46,7 @@
         .detail-main { flex: 1.2; }
         .detail-side { flex: 0.8; display: flex; flex-direction: column; gap: 20px; }
         
-        .detail-name { font-size: 1.6rem; font-weight: bold; margin-bottom: 15px; padding: 12px 15px; background: #f0f0f0; border-radius: 6px; color: #1a1a1a; line-height: 1.4; }
+        .detail-name { font-size: 1.6rem; font-weight: bold; margin-bottom: 8px; padding: 12px 15px; background: #f0f0f0; border-radius: 6px; color: #1a1a1a; line-height: 1.4; }
         .detail-img-container { width: 100%; background: #ffffff; border: 1px solid #eaeaea; border-radius: 6px; overflow: hidden; padding: 10px; text-align: center; }
         .detail-img { max-width: 100%; max-height: 550px; object-fit: contain; border-radius: 4px; }
         .detail-address-block { margin-top: 15px; font-size: 1rem; color: #333; background: #fff; border: 1px solid #eaeaea; padding: 12px 15px; border-radius: 6px; }
@@ -96,16 +103,18 @@
                 <button id="toggle-personal-btn" class="toggle-btn">展開查看全臺排行 ↓</button>
             </div>
 
-            <div class="card">
-                <h2>各縣市總數統計</h2>
-                <div id="city-ranking-list"></div>
-                <button id="toggle-city-btn" class="toggle-btn">展開查看全臺名次 ↓</button>
-            </div>
+            <div class="home-grid-layout">
+                <div class="card">
+                    <h2>各縣市總數統計</h2>
+                    <div id="city-ranking-list"></div>
+                    <button id="toggle-city-btn" class="toggle-btn">展開查看全臺名次 ↓</button>
+                </div>
 
-            <div class="card">
-                <h2>飲水機品牌市佔率</h2>
-                <div class="chart-container">
-                    <canvas id="brandPieChart"></canvas>
+                <div class="card">
+                    <h2>飲水機品牌市佔率</h2>
+                    <div class="chart-container">
+                        <canvas id="brandPieChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,44 +149,18 @@
                 <h1>飲水機研究社第0屆</h1>
             </div>
             
-            <div class="detail-layout">
-                <div class="detail-main">
-                    <div class="card">
-                        <h2>幹部</h2>
-                        <div id="club-officers-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;"></div>
-                    </div>
-
-                    <div class="card">
-                        <h2>宗旨</h2>
-                        <ul class="mission-list">
-                            <li>1. 飲水機在一起強大</li>
-                            <li>2. 皮炎</li>
-                        </ul>
-                    </div>
-
-                    <div class="card">
-                        <h2>社團成員</h2>
-                        <div id="club-members-list"></div>
-                    </div>
+            <div style="display: flex; flex-direction: column; gap: 25px; margin-bottom: 30px;">
+                <div>
+                    <h2 style="font-size: 1.2rem; margin-bottom: 12px; border-bottom: 1px solid #eaeaea; padding-bottom: 5px;">社團幹部名冊</h2>
+                    <div id="club-officers-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
                 </div>
-
-                <div class="detail-side">
-                    <div class="card">
-                        <h2>官方資料</h2>
-                        <div style="margin-top: 10px;">
-                            <div class="info-link-block">
-                                <span>Threads</span>
-                                <strong><a href="https://www.threads.net/@nwhswater_0th" target="_blank">@nwhswater_0th</a></strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <h2>互動挑戰</h2>
-                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSd33j1gp_Zv37m74f-4rOeLYEYtYQPrc7H9MD1YqSqvyxlfnQ/viewform?pli=1" target="_blank" class="exam-btn">第114514屆飲水機研究社測驗試卷</a>
-                    </div>
+                
+                <div>
+                    <h2 style="font-size: 1.2rem; margin-bottom: 12px; border-bottom: 1px solid #eaeaea; padding-bottom: 5px;">核心研究員排行 (依粉絲數)</h2>
+                    <div id="club-members-list"></div>
                 </div>
             </div>
+            <a href="#/">&larr; 返回首頁</a>
         </div>
 
         <div id="user-view" class="view hidden">
@@ -213,8 +196,9 @@
                         <span style="font-size: 0.9rem; color: #666;">最新粉絲數量</span>
                         <div style="font-size: 2.2rem; font-weight: bold; color: #1a1a1a; margin-top: 2px;" id="det-followers">0</div>
                     </div>
-                    <div style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">
-                        數據更新時間：<span id="det-time">-</span>
+                    <div style="font-size: 0.75rem; color: #aaa; margin-top: 15px; border-top: 1px solid #f9f9f9; padding-top: 8px; line-height: 1.6;">
+                        數據更新：<span id="det-time" style="color: #666; font-weight: 500;">-</span><br>
+                        加入日期：<span id="det-join-time" style="color: #666; font-weight: 500;">-</span>
                     </div>
                 </div>
             </div>
@@ -225,7 +209,6 @@
     </div>
 
     <script>
-        // 🔐 改用 Supabase API 設定
         const SUPABASE_URL = "https://azezhxlatzfgltzqguoa.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_FPMDx4PO77A99RzoVbs3XQ_P9R5aOFP";
 
@@ -236,10 +219,10 @@
         ];
 
         let rawData = [];
-        let showAllPersonalRanking = false; // 控制個人排行的展開狀態
+        let showAllPersonalRanking = false; 
         let showAllCitiesRanking = false;
         let myPieChart = null;
-        let userLocation = null; // 儲存使用者的 GPS 經緯度
+        let userLocation = null; 
 
         function safeDecode(str) {
             try { return decodeURIComponent(str); } catch (e) { try { return unescape(str); } catch (err) { return str; } }
@@ -254,7 +237,6 @@
             return isNaN(num) ? 0 : num;
         }
 
-        // 📐 使用 Haversine 公式計算使用者與學校校門口的直線距離 (公里)
         function calculateDistance(lat1, lon1, lat2, lon2) {
             if (!lat1 || !lon1 || !lat2 || !lon2) return null;
             const R = 6371;
@@ -266,10 +248,9 @@
             return R * c;
         }
 
-        // 🚀 將 fetchInitialData 核心改為讀取 Supabase 並映射為舊版屬性
         async function fetchInitialData() {
             try {
-                const res = await fetch(`${SUPABASE_URL}/rest/v1/water_dispensers?select=*`, {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/water_dispensers?select=*&order=created_at.asc`, {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
@@ -280,17 +261,16 @@
                 
                 const supabaseData = await res.json();
                 
-                // 🎯 核心轉換：將 Supabase 17 欄位精準映射為你原本的舊版變數名稱
                 rawData = supabaseData.map(item => ({
                     id: item.threads_id || "",
                     name: item.name || "",
-                    title: item.nickname || "", // 舊版的 title 對應新版的 nickname
+                    title: item.nickname || "", 
                     brand: item.brand || "",
                     brandUrl: item.brand_website || "",
                     city: item.city || "",
-                    school: item.school_name || "", // 舊版的 school 對應新版的 school_name
+                    school: item.school_name || "", 
                     schoolUrl: item.school_website || "",
-                    location: item.address || "", // 舊版的 location 對應新版的 address
+                    location: item.address || "", 
                     mapUrl: item.google_map_url || "",
                     lat: item.lat || null,
                     lng: item.lng || null,
@@ -298,7 +278,8 @@
                     clubRole: item.club_role || "",
                     imageUrl: item.image_url || "",
                     followers: item.followers || 0,
-                    updateTime: item.last_updated_time || "" // 舊版的 updateTime 對應新版的 last_updated_time
+                    updateTime: item.last_updated_time || "",
+                    createTime: item.created_at || "" 
                 }));
 
                 document.getElementById('loading-view').classList.add('hidden');
@@ -365,7 +346,6 @@
             document.getElementById('total-count').innerText = `${rawData.length} 台`;
             drawBrandChart();
 
-            // 🏆 個人粉絲排行榜控制邏輯
             const personalSorted = [...rawData].sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
             const displayPersonalLimit = showAllPersonalRanking ? personalSorted.length : 10;
             const personalListHtml = personalSorted.slice(0, displayPersonalLimit).map((item, idx) => `
@@ -381,7 +361,6 @@
             document.getElementById('personal-ranking-list').innerHTML = personalListHtml || '<div style="color:#aaa;">目前尚無資料</div>';
             document.getElementById('toggle-personal-btn').innerText = showAllPersonalRanking ? "收起全臺排行 ↑" : "展開查看全臺排行 ↓";
 
-            // 🏙️ 各縣市總數統計控制邏輯
             const cityCounts = {};
             ALL_CITIES.forEach(c => cityCounts[c] = 0);
             rawData.forEach(item => { if (cityCounts[item.city] !== undefined) cityCounts[item.city]++; });
@@ -401,28 +380,23 @@
             document.getElementById('toggle-city-btn').innerText = showAllCitiesRanking ? "收起全臺名次 ↑" : "展開查看全臺名次 ↓";
         }
 
-        // 個人排行按鈕事件監聽[cite: 1]
         document.getElementById('toggle-personal-btn').addEventListener('click', () => {
             showAllPersonalRanking = !showAllPersonalRanking;
             renderHomePage();
         });
 
-        // 縣市統計按鈕事件監聽[cite: 1]
         document.getElementById('toggle-city-btn').addEventListener('click', () => {
             showAllCitiesRanking = !showAllCitiesRanking;
             renderHomePage();
         });
 
-        // 🚀 全部總覽頁面控制邏輯
         function renderAllPage() {
             document.getElementById('all-view').classList.remove('hidden');
-            
             const searchInput = document.getElementById('all-search-input');
             const sortSelect = document.getElementById('all-sort-select');
 
             sortSelect.removeEventListener('change', handleSortChange);
             sortSelect.addEventListener('change', handleSortChange);
-            
             searchInput.removeEventListener('input', updateAllList);
             searchInput.addEventListener('input', updateAllList);
 
@@ -507,6 +481,13 @@
                         distStr = d !== null ? `<span style="font-size:0.85rem; color:#0066cc; background:#e0f0ff; padding:2px 6px; border-radius:4px; margin-left:8px;">📍 離校門口 ${d.toFixed(1)} km</span>` : "";
                     }
 
+                    // 🎯 總覽頁：只有選取時間排序時（join-asc 或 join-desc）才渲染出純日期
+                    let dateHtml = "";
+                    if ((sortBy === 'join-asc' || sortBy === 'join-desc') && item.createTime) {
+                        let pureDate = item.createTime.substring(0, 10); 
+                        dateHtml = `<div style="font-size:0.7rem; color:#999; margin-top:2px;">📅 ${pureDate}</div>`;
+                    }
+
                     return `
                         <div class="water-card-item">
                             <div>
@@ -519,6 +500,7 @@
                             <div style="text-align:right;">
                                 <div style="font-weight:bold; color:#1a1a1a; font-size:1.1rem;">${item.followers}</div>
                                 <div style="font-size:0.75rem; color:#888;">粉絲</div>
+                                ${dateHtml}
                             </div>
                         </div>
                     `;
@@ -579,6 +561,7 @@
         }
 
         function renderUserDetailPage(userId) {
+            document.getElementById('club-view').classList.add('hidden'); 
             document.getElementById('user-view').classList.remove('hidden');
             const item = rawData.find(u => u.id === userId);
             if (!item) { document.getElementById('det-name').innerText = "找不到該飲水機資料"; return; }
@@ -615,7 +598,10 @@
 
             document.getElementById('det-title').innerHTML = titleParts.length > 0 ? titleParts.join('<br>') : "無";
             document.getElementById('det-followers').innerText = item.followers || "0";
+            
+            // 🎯 個人頁：加入日期（只要純日期）、數據更新時間（保留完整精確時間）兩者並存！
             document.getElementById('det-time').innerText = item.updateTime || "-";
+            document.getElementById('det-join-time').innerText = item.createTime ? item.createTime.substring(0, 10) : "-";
         }
 
         window.addEventListener('hashchange', handleRouting);
