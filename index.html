@@ -28,7 +28,6 @@
         .home-grid-layout { display: flex; flex-direction: column; gap: 20px; margin-bottom: 25px; }
         .home-grid-layout .card { width: 100%; margin-bottom: 0; }
 
-
         /* 圖表專用容器 */
         .chart-container { position: relative; margin: auto; height: 320px; width: 100%; display: flex; justify-content: center; }
         
@@ -60,11 +59,10 @@
         }
         .clickable-card:last-child { margin-bottom: 0; }
         
-        /* 總覽專用文字樣式 */
+        /* 總覽入口大廳專用文字樣式 */
         .lobby-card-title { font-size: 1.15rem; font-weight: 600; color: #1a1a1a; }
         .lobby-card-desc { font-size: 0.85rem; color: #666; margin-top: 4px; }
         .lobby-arrow { font-size: 1.2rem; color: #ccc; font-weight: 300; }
-
 
         /* 詳細頁與社團專用雙欄排版 */
         .detail-layout { display: flex; flex-direction: column; gap: 24px; }
@@ -96,7 +94,6 @@
         .exam-btn { display: block; text-align: center; padding: 15px; background: #1a1a1a; color: #ffffff; border-radius: 6px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.2s; }
         .exam-btn:hover { background: #333; text-decoration: none; }
 
-
         /* 🔍 全部總覽頁面專用篩選欄樣式 */
         .search-filter-bar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         @media(min-width: 576px) { .search-filter-bar { flex-direction: row; } }
@@ -105,10 +102,28 @@
         .sort-select { padding: 10px 15px; border: 1px solid #eaeaea; border-radius: 6px; font-size: 1rem; background-color: #ffffff; cursor: pointer; outline: none; }
         .sort-select:focus { border-color: #0066cc; }
         .all-water-list { display: flex; flex-direction: column; }
+
+        /* ==================== 關於我們專屬樣式 (完全不修改保留) ==================== */
+        .about-container { max-width: 800px; margin: 0 auto; }
+        .main-title { font-size: 2rem; font-weight: 700; margin-bottom: 30px; letter-spacing: -0.5px; }
+        .about-container h2 { font-size: 1.5rem; font-weight: 600; color: #1a1a1a; padding-bottom: 8px; border-bottom: 1px solid #1a1a1a; margin-bottom: 25px; }
+        .about-container p { font-size: 1.05rem; color: #333; margin-bottom: 18px; text-align: justify; }
+        .tech-item { margin-bottom: 28px; }
+        .tech-item:last-child { margin-bottom: 0; }
+        .tech-item h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; color: #1a1a1a; }
+        .tech-item p { font-size: 1rem; color: #444; margin-bottom: 0; }
+        .milestone-container { display: flex; flex-direction: column; gap: 12px; }
+        .milestone-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #eaeaea; }
+        .milestone-item:last-child { border-bottom: none; }
+        .milestone-date { font-weight: 600; font-size: 1rem; color: #1a1a1a; min-width: 120px; }
+        .milestone-title { font-size: 1rem; color: #333; flex: 1; text-align: right; }
+        .error-msg { text-align: center; color: #888; font-size: 1rem; padding: 30px 0; }
+        .back-link-area { margin-top: 30px; }
+        .back-link-area a { color: #0066cc; font-weight: 500; text-decoration: none; cursor: pointer; }
+        .back-link-area a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-
 
     <header>
         <div class="logo"><a href="#/">飲水機觀測站</a></div>
@@ -116,13 +131,12 @@
             <a href="#/" id="nav-home">首頁</a>
             <a href="#/all" id="nav-all">總覽</a>
             <a href="#/club" id="nav-club">飲水機研究社</a>
+            <a href="#/about" id="nav-about">關於我們</a>
         </nav>
     </header>
 
-
     <div class="container">
         <div id="loading-view" class="loading">正在向雲端讀取飲水機即時數據...</div>
-
 
         <div id="home-view" class="view hidden">
             <div class="card" style="text-align: center; padding: 40px 20px;">
@@ -130,14 +144,12 @@
                 <p style="color: #666; margin-top: 5px; font-size: 1.1rem;">全臺飲水機總數</p>
             </div>
 
-
             <div class="home-grid-layout">
                 <div class="card">
                     <h2>個人粉絲排行榜</h2>
                     <div id="personal-ranking-list"></div>
                     <button id="toggle-personal-btn" class="toggle-btn">展開查看全臺排行 ↓</button>
                 </div>
-
 
                 <div class="card">
                     <h2>飲水機品牌市佔率</h2>
@@ -148,9 +160,8 @@
             </div>
         </div>
 
-
         <div id="all-view" class="view hidden">
-            <h2 id="all-view-main-title" style="font-size: 1.6rem; border: none; margin-bottom: 20px;">總覽</h2>
+            <h2 id="all-view-main-title" style="font-size: 1.6rem; border: none; margin-bottom: 20px;">總覽入口大廳</h2>
             
             <div class="search-filter-bar hidden" id="all-filter-bar">
                 <input type="text" id="all-search-input" class="search-input" placeholder="輸入關鍵字搜尋名稱、所屬單位、縣市或品牌...">
@@ -163,14 +174,12 @@
                 </select>
             </div>
 
-
             <div id="all-water-list-container" class="all-water-list"></div>
             
             <div id="back-to-lobby-area" class="hidden" style="margin-top: 25px;">
-                <a href="#/all" style="color: #0066cc; font-weight: 500;">&larr; 返回總覽大廳</a>
+                <a href="#/all" style="color: #0066cc; font-weight: 500;">&larr; 返回總覽</a>
             </div>
         </div>
-
 
         <div id="drilldown-view" class="view hidden">
             <h2 id="drilldown-view-title" style="font-size: 1.6rem; border: none; margin-bottom: 20px;">分類詳情</h2>
@@ -179,7 +188,6 @@
                 <a id="drilldown-back-link" style="color: #0066cc; font-weight: 500;">&larr; 返回上一層清單</a>
             </div>
         </div>
-
 
         <div id="club-view" class="view hidden">
             <div class="club-header">
@@ -193,13 +201,11 @@
                         <div id="club-officers-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;"></div>
                     </div>
 
-
                     <div class="card">
                         <h2>社團成員</h2>
                         <div id="club-members-list"></div>
                     </div>
                 </div>
-
 
                 <div class="detail-side">
                     <div class="card">
@@ -212,7 +218,6 @@
                         </div>
                     </div>
 
-
                     <div class="card">
                         <h2>宗旨</h2>
                         <ul class="mission-list">
@@ -221,7 +226,6 @@
                         </ul>
                     </div>
 
-
                     <div class="card">
                         <h2>互動挑戰</h2>
                         <a href="https://docs.google.com/forms/d/e/1FAIpQLSd33j1gp_Zv37m74f-4rOeLYEYtYQPrc7H9MD1YqSqvyxlfnQ/viewform?pli=1" target="_blank" class="exam-btn">第114514屆飲水機研究社測驗試卷</a>
@@ -229,7 +233,6 @@
                 </div>
             </div>
         </div>
-
 
         <div id="user-view" class="view hidden">
             <div class="detail-layout">
@@ -266,7 +269,6 @@
                         <div id="det-category-badges" class="category-badges-container"></div>
                     </div>
 
-
                     <div style="margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 15px;">
                         <span style="font-size: 0.9rem; color: #666;">最新粉絲數量</span>
                         <div style="font-size: 2.2rem; font-weight: bold; color: #1a1a1a; margin-top: 2px;" id="det-followers">0</div>
@@ -281,13 +283,106 @@
                 <a onclick="window.history.back()" style="color:#0066cc; cursor:pointer;">&larr; 返回前一頁</a>
             </div>
         </div>
-    </div>
 
+        <div id="about-lobby-view" class="view hidden">
+            <div class="about-container">
+                <h1 class="main-title">關於我們</h1>
+                
+                <a class="clickable-card" href="#/origin">
+                    <div>
+                        <div class="lobby-card-title">專案初心</div>
+                        <div class="lobby-card-desc">探索飲水機觀測站從校園角落走向全臺監測的演進歷程</div>
+                    </div>
+                    <div class="lobby-arrow">&rarr;</div>
+                </a>
+                
+                <a class="clickable-card" href="#/tech">
+                    <div>
+                        <div class="lobby-card-title">技術與美學</div>
+                        <div class="lobby-card-desc">深入禮持久層、數據採集引擎與極簡視覺的架構規範</div>
+                    </div>
+                    <div class="lobby-arrow">&rarr;</div>
+                </a>
+                
+                <a class="clickable-card" href="#/milestones">
+                    <div>
+                        <div class="lobby-card-title">發展里程碑</div>
+                        <div class="lobby-card-desc">透過雲端數據即時串接，回顧專案的歷史性重要進展節點</div>
+                    </div>
+                    <div class="lobby-arrow">&rarr;</div>
+                </a>
+            </div>
+        </div>
+
+        <div id="origin-view" class="view hidden">
+            <div class="about-container">
+                <h2>專案初心</h2>
+                <p>本專案發跡於國立宜蘭高級中學的臨風樓。最初僅是校園內部為了觀測、記錄與優化飲水機使用體驗而展開的小型社群計劃，隨著時間推移與技術框架的逐步完善，這份關懷飲水品質的熱忱成功延伸至全台的跨區域即時監測，演進為如今規模完善的「飲水機觀測站」，持續為更多使用者帶來公開、透明且精確的飲水機數據圖表。</p>
+                
+                <div class="back-link-area">
+                    <a href="#/about">&larr; 返回關於我們</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="tech-view" class="view hidden">
+            <div class="about-container">
+                <h2>技術與美學</h2>
+                
+                <div class="tech-item">
+                    <h3>1.Supabase：</h3>
+                    <p>作為專案的資料持久層與後端管理平台。利用關聯式資料庫儲存飲水機的基礎數據、地理座標以及開發里程碑。透過資料庫的 API 接口與行級安全（RLS）權限控制，確保前端網頁能即時且安全地讀取最新資料。</p>
+                </div>
+
+                <div class="tech-item">
+                    <h3>2.Python (粉絲數爬蟲)：</h3>
+                    <p>專案的自動化數據採集引擎。利用自動化測試工具（如 Playwright）模擬瀏覽器行為，定期存取社群平台公開頁面以擷取各帳號的最新粉絲數量，並將數據同步至資料庫中。</p>
+                </div>
+
+                <div class="tech-item">
+                    <h3>3.Vercel:</h3>
+                    <p>託管基於原生 JavaScript 構建的單頁應用程式 (SPA)，確保網頁在全臺各地具備低延遲的存取體驗。
+                    前端整合了 Chart.js 進行品牌市佔率與趨勢的圖表可視化，並利用 Font Awesome 提供介面標識系統。
+                    該平台承載了縣市總數統計、個人粉絲排行榜以及社團資訊展示等視圖切換邏輯，並負責透過 API 請求即時展現資料庫中的最新數據。</p>
+                </div>
+
+                <div class="tech-item">
+                    <h3>4.GitHub (版本控制與 CI/CD 自動化架構):</h3>
+                    <p>負責程式碼的版本管理與協同開發。利用其內建的 GitHub Actions 或連動機制驅動 持續整合與持續部署 (CI/CD) 流程。
+                    當開發者將最新的爬蟲代碼 or 前端修正推送至儲存庫時，GitHub 會自動觸發 Vercel 的部署任務，確保本機開發 environment 與雲端運算資源的一致性，並簡化了跨設備開發所需的環境配置成本。</p>
+                </div>
+
+                <div class="tech-item">
+                    <h3>5.Apple 極簡主義 (UI/UX 設計規範):</h3>
+                    <p>定義了專案的視覺呈現規範，強調高訊號雜訊比 (Signal-to-noise ratio) 與大量留白設計。
+                    色彩系統採用 #ffffff 與 #fafafa 作為背景基調，搭配 #1a1a1a 深灰色文字確保閱讀對比度。
+                    版面配置採用彈性佈局（如寬螢幕下的雙欄並排與手機端的垂直堆疊），並優先調用系統預設字體層級，旨在為使用者提供穩定、現代且專注於數據本身的專業儀表板體驗。</p>
+                </div>
+                
+                <div class="back-link-area">
+                    <a href="#/about">&larr; 返回關於我們</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="milestones-view" class="view hidden">
+            <div class="about-container">
+                <h2>發展里程碑</h2>
+                <div id="milestone-list" class="milestone-container">
+                    <div class="loading">正在向雲端讀取歷史里程碑數據...</div>
+                </div>
+                
+                <div class="back-link-area">
+                    <a href="#/about">&larr; 返回關於我們</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <script>
         const SUPABASE_URL = "https://azezhxlatzfgltzqguoa.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_FPMDx4PO77A99RzoVbs3XQ_P9R5aOFP";
-
 
         const ALL_CITIES = [
             "臺北市", "新北市", "基隆市", "桃園市", "新竹市", "新竹縣", "苗栗縣", "臺中市", 
@@ -295,17 +390,14 @@
             "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣", "金門縣", "連江縣"
         ];
 
-
         let rawData = [];
         let showAllPersonalRanking = false; 
         let myPieChart = null;
         let userLocation = null; 
 
-
         function safeDecode(str) {
             try { return decodeURIComponent(str); } catch (e) { try { return unescape(str); } catch (err) { return str; } }
         }
-
 
         function parseFollowersCount(val) {
             if (!val) return 0;
@@ -315,7 +407,6 @@
             let num = parseInt(str.replace(/,/g, ''), 10);
             return isNaN(num) ? 0 : num;
         }
-
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
             if (!lat1 || !lon1 || !lat2 || !lon2) return null;
@@ -327,7 +418,6 @@
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             return R * c;
         }
-
 
         async function fetchInitialData() {
             try {
@@ -368,13 +458,11 @@
             }
         }
 
-
-        /* 🚀 【核心路由大修正】結構化路由映射 */
+        /* 🚀 【核心路由大修正】結構化路由映射與融合關於我們 */
         function handleRouting() {
             const hash = window.location.hash || '#/';
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
             document.querySelectorAll('nav a').forEach(n => n.classList.remove('active'));
-
 
             if (hash === '#/' || hash === '') {
                 document.getElementById('nav-home').classList.add('active');
@@ -408,9 +496,21 @@
                 renderClubPage();
             } else if (hash.startsWith('#/user/')) {
                 renderUserDetailPage(safeDecode(hash.substring(7)));
+            } else if (hash === '#/about') {
+                document.getElementById('nav-about').classList.add('active');
+                document.getElementById('about-lobby-view').classList.remove('hidden');
+            } else if (hash === '#/origin') {
+                document.getElementById('nav-about').classList.add('active');
+                document.getElementById('origin-view').classList.remove('hidden');
+            } else if (hash === '#/tech') {
+                document.getElementById('nav-about').classList.add('active');
+                document.getElementById('tech-view').classList.remove('hidden');
+            } else if (hash === '#/milestones') {
+                document.getElementById('nav-about').classList.add('active');
+                document.getElementById('milestones-view').classList.remove('hidden');
+                fetchMilestones();
             }
         }
-
 
         function drawBrandChart() {
             const brandCounts = {};
@@ -423,7 +523,6 @@
             const backgroundColors = ['#4a7c59', '#68809a', '#bda88a', '#bd8a8a', '#8abdac', '#a38abd', '#8a9fbd', '#9e9e9e', '#cfb497', '#97b2cf'];
             const ctx = document.getElementById('brandPieChart').getContext('2d');
             if (myPieChart) myPieChart.destroy();
-
 
             myPieChart = new Chart(ctx, {
                 type: 'pie',
@@ -439,12 +538,10 @@
             });
         }
 
-
         function renderHomePage() {
             document.getElementById('home-view').classList.remove('hidden');
             document.getElementById('total-count').innerText = `${rawData.length} 台`;
             drawBrandChart();
-
 
             const personalSorted = [...rawData].sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
             const displayPersonalLimit = showAllPersonalRanking ? personalSorted.length : 10;
@@ -462,12 +559,10 @@
             document.getElementById('toggle-personal-btn').innerText = showAllPersonalRanking ? "收起全臺排行 ↑" : "展開查看全臺排行 ↓";
         }
 
-
         document.getElementById('toggle-personal-btn').addEventListener('click', () => {
             showAllPersonalRanking = !showAllPersonalRanking;
             renderHomePage();
         });
-
 
         /* 🎛️ 總覽層級多路徑動態渲染處理 */
         function renderAllSubViews(subViewType) {
@@ -477,19 +572,15 @@
             const backArea = document.getElementById('back-to-lobby-area');
             const container = document.getElementById('all-water-list-container');
 
-
-            // 預設重置事件監聽與隱藏區塊
             filterBar.classList.add('hidden');
             backArea.classList.add('hidden');
 
-
-            // 【1】大廳入口視圖 #/all
             if (subViewType === 'lobby') {
                 titleEl.innerText = "總覽";
                 container.innerHTML = `
                     <a class="clickable-card" href="#/all/list">
                         <div>
-                            <div class="lobby-card-title">全部</div>
+                            <div class="lobby-card-title">全部清單</div>
                             <div class="lobby-card-desc">瀏覽全臺所有觀測站飲水機，支援多功能欄位排序與搜尋</div>
                         </div>
                         <div class="lobby-arrow">&rarr;</div>
@@ -519,25 +610,18 @@
                 return;
             }
 
-
-            // 非大廳狀態，開啟「返回大廳」的導覽列
             backArea.classList.remove('hidden');
 
-
-            // 【2】全部子頁面 #/all/list
             if (subViewType === 'list') {
-                titleEl.innerText = "全部";
+                titleEl.innerText = "全部清單";
                 filterBar.classList.remove('hidden');
-
 
                 const searchInput = document.getElementById('all-search-input');
                 const sortSelect = document.getElementById('all-sort-select');
 
-
                 const updateFilteredList = () => {
                     const query = searchInput.value.toLowerCase().trim();
                     const sortBy = sortSelect.value;
-
 
                     let filtered = rawData.filter((item, index) => {
                         item._originalIndex = index; 
@@ -547,7 +631,6 @@
                                (item.brand || "").toLowerCase().includes(query) || 
                                (item.id || "").toLowerCase().includes(query);
                     });
-
 
                     filtered.sort((a, b) => {
                         const followersA = parseFollowersCount(a.followers);
@@ -567,12 +650,10 @@
                         return 0;
                     });
 
-
                     if (filtered.length === 0) {
                         container.innerHTML = `<div style="color:#aaa; text-align:center; padding:30px;">找不到符合關鍵字的飲水機。</div>`;
                         return;
                     }
-
 
                     container.innerHTML = filtered.map(item => {
                         let distStr = "";
@@ -584,7 +665,6 @@
                         if ((sortBy === 'join-asc' || sortBy === 'join-desc') && item.createTime) {
                             dateHtml = `<div style="font-size:0.7rem; color:#999; margin-top:2px;">📅 ${item.createTime.substring(0, 10)}</div>`;
                         }
-
 
                         return `
                             <a class="clickable-card" href="#/user/${encodeURIComponent(item.id)}">
@@ -605,7 +685,6 @@
                     }).join('');
                 };
 
-
                 sortSelect.onchange = function() {
                     if (this.value === 'distance-asc' && !userLocation) {
                         if (navigator.geolocation) {
@@ -622,17 +701,14 @@
                 searchInput.oninput = updateFilteredList;
                 updateFilteredList();
 
-
-            // 【3】單位分類子頁面 #/all/units
             } else if (subViewType === 'units') {
-                titleEl.innerText = "單位分類";
+                titleEl.innerText = "所屬單位分類";
                 const unitCounts = {};
                 rawData.forEach(item => {
                     const unitName = item.school ? item.school.trim() : "未標記單位";
                     unitCounts[unitName] = (unitCounts[unitName] || 0) + 1;
                 });
                 const unitsSorted = Object.keys(unitCounts).map(name => ({ name, count: unitCounts[name] })).sort((a, b) => b.count - a.count);
-
 
                 container.innerHTML = unitsSorted.map((unit, idx) => `
                     <a class="clickable-card" href="#/unit/${encodeURIComponent(unit.name)}">
@@ -642,19 +718,17 @@
                         </div>
                         <div style="text-align:right;">
                             <div style="font-weight:bold; color:#1a1a1a; font-size:1.1rem;">${unit.count} 台</div>
+                            <div style="font-size:0.75rem; color:#888;">飲水機建檔台數</div>
                         </div>
                     </a>
                 `).join('');
 
-
-            // 【4】縣市分類子頁面 #/all/cities
             } else if (subViewType === 'cities') {
-                titleEl.innerText = "縣市分類";
+                titleEl.innerText = "行政縣市分類";
                 const cityCounts = {};
                 ALL_CITIES.forEach(c => cityCounts[c] = 0);
                 rawData.forEach(item => { if (cityCounts[item.city] !== undefined) cityCounts[item.city]++; });
                 const citiesSorted = ALL_CITIES.map(c => ({ name: c, count: cityCounts[c] })).sort((a, b) => b.count - a.count);
-
 
                 container.innerHTML = citiesSorted.map((city, idx) => `
                     <a class="clickable-card" href="#/city/${encodeURIComponent(city.name)}">
@@ -664,21 +738,19 @@
                         </div>
                         <div style="text-align:right;">
                             <div style="font-weight:bold; color:#1a1a1a; font-size:1.1rem;">${city.count} 台</div>
+                            <div style="font-size:0.75rem; color:#888;">飲水機建檔台數</div>
                         </div>
                     </a>
                 `).join('');
 
-
-            // 【5】品牌分類子頁面 #/all/brands (純個數排行)
             } else if (subViewType === 'brands') {
-                titleEl.innerText = "品牌分類";
+                titleEl.innerText = "製造品牌分類";
                 const brandCounts = {};
                 rawData.forEach(item => {
                     const brandName = item.brand ? item.brand.trim() : "未標記品牌";
                     brandCounts[brandName] = (brandCounts[brandName] || 0) + 1;
                 });
                 const brandsSorted = Object.keys(brandCounts).map(name => ({ name, count: brandCounts[name] })).sort((a, b) => b.count - a.count);
-
 
                 container.innerHTML = brandsSorted.map((brand, idx) => `
                     <a class="clickable-card" href="#/brand/${encodeURIComponent(brand.name)}">
@@ -688,40 +760,37 @@
                         </div>
                         <div style="text-align:right;">
                             <div style="font-weight:bold; color:#1a1a1a; font-size:1.1rem;">${brand.count} 台</div>
+                            <div style="font-size:0.75rem; color:#888;">飲水機建檔台數</div>
                         </div>
                     </a>
                 `).join('');
             }
         }
 
-
-        /* 🔍 深度鑽取 (Drill-down) 頁面渲染：全站統一為 clickable-card 樣式 */
+        /* 🔍 深度鑽取 (Drill-down) 頁面渲染 */
         function renderDrilldownPage(targetName, type) {
             document.getElementById('drilldown-view').classList.remove('hidden');
             const titleEl = document.getElementById('drilldown-view-title');
             const backLink = document.getElementById('drilldown-back-link');
             let filteredItems = [];
 
-
             if (type === 'unit') {
-                titleEl.innerText = `🏢 所屬單位：${targetName}`;
+                titleEl.innerText = `${targetName}`;
                 filteredItems = rawData.filter(item => (item.school ? item.school.trim() : "未標記單位") === targetName);
                 backLink.href = "#/all/units";
-                backLink.innerText = "← 返回單位排行清單";
+                backLink.innerText = "← 返回所屬單位分類";
             } else if (type === 'city') {
-                titleEl.innerText = `📍 行政區：${targetName}`;
+                titleEl.innerText = `${targetName}`;
                 filteredItems = rawData.filter(item => item.city === targetName);
                 backLink.href = "#/all/cities";
-                backLink.innerText = "← 返回縣市排行清單";
+                backLink.innerText = "← 返回行政縣市分類";
             } else if (type === 'brand') {
-                titleEl.innerText = `🏷️ 製造品牌：${targetName}`;
+                titleEl.innerText = `${targetName}`;
                 filteredItems = rawData.filter(item => (item.brand ? item.brand.trim() : "未標記品牌") === targetName);
                 backLink.href = "#/all/brands";
-                backLink.innerText = "← 返回品牌排行清單";
+                backLink.innerText = "← 返回製造品牌分類";
             }
 
-
-            // 鑽取分頁一律默認採用「粉絲數量由多到少」排序
             filteredItems.sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
             
             const listContainer = document.getElementById('drilldown-water-list');
@@ -729,7 +798,6 @@
                 listContainer.innerHTML = `<div style="color:#aaa; text-align:center; padding:30px;">目前此類別下無任何資料。</div>`;
                 return;
             }
-
 
             listContainer.innerHTML = filteredItems.map((item, idx) => `
                 <a class="clickable-card" href="#/user/${encodeURIComponent(item.id)}">
@@ -748,7 +816,6 @@
             `).join('');
         }
 
-
         function renderClubPage() {
             document.getElementById('club-view').classList.remove('hidden');
             const officers = rawData.filter(item => item.clubRole && item.clubRole.trim() !== "");
@@ -764,10 +831,8 @@
             `).join('');
             document.getElementById('club-officers-container').innerHTML = officersHtml || '<div style="color:#aaa;">目前尚未設定幹部職位</div>';
 
-
             const members = rawData.filter(item => item.isClub === "慢" || item.isClub === "是");
             members.sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
-
 
             const membersHtml = members.map((m, idx) => `
                 <div class="list-item">
@@ -781,16 +846,13 @@
             document.getElementById('club-members-list').innerHTML = membersHtml || '<div style="color:#aaa;">目前尚無成員加入</div>';
         }
 
-
         function renderUserDetailPage(userId) {
             document.getElementById('user-view').classList.remove('hidden');
             const item = rawData.find(u => u.id === userId);
             if (!item) { document.getElementById('det-name').innerText = "找不到該飲水機資料"; return; }
 
-
             document.getElementById('det-name').innerText = item.name || "未命名飲水機";
             document.getElementById('det-img').src = item.imageUrl || "https://via.placeholder.com/400x400?text=No+Image";
-
 
             const locLink = document.getElementById('det-location-link');
             locLink.innerText = item.location || "未提供詳細地址";
@@ -801,7 +863,6 @@
                 locLink.removeAttribute('href');
                 locLink.style.pointerEvents = "none"; locLink.style.textDecoration = "none";
             }
-
 
             const schoolLink = document.getElementById('det-school-link');
             schoolLink.innerText = item.school || "-";
@@ -826,30 +887,18 @@
             const linkEl = document.getElementById('det-id-link');
             linkEl.innerText = `@${item.id}`; linkEl.href = `https://www.threads.net/@${item.id}`;
 
-
-            // 🏷️ 【詳細頁標籤優化】嚴格按順序輸出：單位、縣市、品牌、社團連結膠囊
             const badgesContainer = document.getElementById('det-category-badges');
             let badgesHtml = "";
-            if (item.school) {
-                badgesHtml += `<a href="#/all/units" class="gray-badge">${item.school.trim()}</a>`;
-            }
-            if (item.city) {
-                badgesHtml += `<a href="#/all/cities" class="gray-badge">${item.city.trim()}</a>`;
-            }
-            if (item.brand) {
-                badgesHtml += `<a href="#/all/brands" class="gray-badge">${item.brand.trim()}</a>`;
-            }
-            if (item.isClub === "是" || item.isClub === "慢") {
-                badgesHtml += `<a href="#/club" class="gray-badge">飲水機研究社</a>`;
-            }
+            if (item.school) { badgesHtml += `<a href="#/all/units" class="gray-badge">${item.school.trim()}</a>`; }
+            if (item.city) { badgesHtml += `<a href="#/all/cities" class="gray-badge">${item.city.trim()}</a>`; }
+            if (item.brand) { badgesHtml += `<a href="#/all/brands" class="gray-badge">${item.brand.trim()}</a>`; }
+            if (item.isClub === "是" || item.isClub === "慢") { badgesHtml += `<a href="#/club" class="gray-badge">飲水機研究社</a>`; }
             badgesContainer.innerHTML = badgesHtml || `<span style="color:#aaa;">-</span>`;
-
 
             let roleText = "";
             if (item.clubRole) { roleText = `<span class="badge">👑 社團${item.clubRole}</span>`;
             } else if (item.isClub === "是" || item.isClub === "慢") { roleText = `<span class="badge">🥤 社團成員</span>`;
             }
-
 
             const sortedData = [...rawData].sort((a, b) => parseFollowersCount(b.followers) - parseFollowersCount(a.followers));
             const rankIndex = sortedData.findIndex(u => u.id === userId);
@@ -865,6 +914,37 @@
             document.getElementById('det-join-time').innerText = item.createTime ? item.createTime.substring(0, 10) : "-";
         }
 
+        /* ==================== 發展里程碑數據非同步撈取邏輯 (完全不修改保留) ==================== */
+        async function fetchMilestones() {
+            const container = document.getElementById('milestone-list');
+            try {
+                const res = await fetch(`${SUPABASE_URL}/rest/v1/development?select=date,title&order=date.desc`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+
+                if (!res.ok) throw new Error("無法連接資料庫");
+                const milestones = await res.json();
+
+                if (milestones.length === 0) {
+                    container.innerHTML = `<div class="loading">目前尚無里程碑記錄。</div>`;
+                    return;
+                }
+
+                container.innerHTML = milestones.map(item => `
+                    <div class="milestone-item">
+                        <div class="milestone-date">${item.date || '-'}</div>
+                        <div class="milestone-title">${item.title || '-'}</div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<div class="error-msg">數據載入失敗，請確認網路連線或 Supabase API 設定。</div>`;
+            }
+        }
 
         window.addEventListener('hashchange', handleRouting);
         fetchInitialData();
