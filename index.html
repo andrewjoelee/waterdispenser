@@ -120,11 +120,41 @@
         .tech-item:last-child { margin-bottom: 0; }
         .tech-item h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; color: #1a1a1a; }
         .tech-item p { font-size: 1rem; color: #444; margin-bottom: 0; }
-        .milestone-container { display: flex; flex-direction: column; gap: 12px; }
-        .milestone-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #eaeaea; }
+        
+        /* 修正後的里程碑樣式：兩欄左對齊，提升高訊號雜訊比 */
+        .milestone-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            max-width: 600px; /* 限制寬度讓視覺更集中 */
+            margin: 0 auto;  /* 居中顯示 */
+        }
+
+        .milestone-item { 
+            display: flex; 
+            justify-content: flex-start; /* 改為左對齊 */
+            align-items: flex-start; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #eaeaea; 
+        }
+
         .milestone-item:last-child { border-bottom: none; }
-        .milestone-date { font-weight: 600; font-size: 1rem; color: #1a1a1a; min-width: 120px; }
-        .milestone-title { font-size: 1rem; color: #333; flex: 1; text-align: right; }
+
+        .milestone-date { 
+            font-weight: 500; 
+            font-size: 0.95rem; 
+            color: #86868b; /* Apple 灰色 */
+            flex: 0 0 110px; /* 固定日期寬度，確保右側內容對齊一線 */
+        }
+
+        .milestone-title { 
+            font-size: 0.95rem; 
+            color: #1a1a1a; 
+            flex: 1; 
+            text-align: left; /* 強制內容向左靠攏 */
+            line-height: 1.4;
+        }
+
         .error-msg { text-align: center; color: #888; font-size: 1rem; padding: 30px 0; }
         .back-link-area { margin-top: 30px; }
         .back-link-area a { color: #0066cc; font-weight: 500; text-decoration: none; cursor: pointer; }
