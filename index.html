@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -8,14 +9,21 @@
     <style>
         /* 精緻的極簡風格全面回歸 */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #fafafa; color: #1a1a1a; line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* 💡 修正 html 與 body 佈局，確保全螢幕背景色統一，消除白色斷層 */
+        html, body { min-height: 100vh; background-color: #fafafa; }
+        body { color: #1a1a1a; line-height: 1.5; display: flex; flex-direction: column; }
+        
         a { color: #0066cc; text-decoration: none; cursor: pointer; }
         header { background: #ffffff; border-bottom: 1px solid #eaeaea; padding: 15px 20px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-weight: bold; font-size: 1.2rem; }
         .logo a { color: #1a1a1a; }
         nav a { margin-left: 15px; color: #666; font-size: 0.95rem; text-decoration: none; }
         nav a.active { color: #1a1a1a; font-weight: bold; }
-        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; flex: 1; }
+        
+        /* 💡 讓 container 自動填滿剩餘垂直空間（flex: 1），並補上 width: 100% 確保橫向完美撐開 */
+        .container { width: 100%; max-width: 1000px; margin: 30px auto; padding: 0 20px; flex: 1; }
+        
         .loading { text-align: center; padding: 50px; color: #888; font-size: 1.1rem; }
         .hidden { display: none !important; }
         
@@ -35,7 +43,7 @@
         .list-item:last-child { border-bottom: none; }
         .rank-badge { font-weight: bold; margin-right: 10px; color: #888; min-width: 25px; display: inline-block; }
         .rank-1, .rank-2, .rank-3 { color: #1a1a1a; }
-        .toggle-btn { display: block; width: 100%; text-align: center; padding: 10px; background: #f5f5f5; border: 1px solid #eaeaea; border-radius: 6px; margin-top: 10px; color: #555; font-size: 0.9rem; cursor: pointer; }
+        .toggle-btn { display: block; width: 100%; text-align: center; padding: 10px; background: #f5f5f5; border: 1px solid #eaeaea; border-radius: 6px; margin-top: 10px; color: #555; font-size: 0.9rem; border: 1px solid #eaeaea; cursor: pointer; }
         
         /* 全站統一卡片互動感（全區塊點擊、Apple 式懸停位移與投影） */
         .clickable-card { 
@@ -68,13 +76,12 @@
         @media(min-width: 768px) { .detail-layout { flex-direction: row; } }
         .detail-main { flex: 1.2; }
         .detail-side { flex: 0.8; display: flex; flex-direction: column; gap: 20px; }
-        .detail-side-item { background: #ffffff; border: 1px solid #eaeaea; padding: 15px; border-radius: 6px; }
         
         .detail-name { font-size: 1.6rem; font-weight: bold; margin-bottom: 8px; padding: 12px 15px; background: #f0f0f0; border-radius: 6px; color: #1a1a1a; line-height: 1.4; }
         .detail-img-container { width: 100%; background: #ffffff; border: 1px solid #eaeaea; border-radius: 6px; overflow: hidden; padding: 10px; text-align: center; }
         .detail-img { max-width: 100%; max-height: 550px; object-fit: contain; border-radius: 4px; }
         .detail-address-block { margin-top: 15px; font-size: 1rem; color: #333; background: #fff; border: 1px solid #eaeaea; padding: 12px 15px; border-radius: 6px; }
-        .badge { display: inline-block; padding: 2px 8px; background: #e0f0ff; color: #0066cc; font-size: 0.8rem; font-weight: bold; border-radius: 4px; margin-top: 4px; }
+        .badge { display: inline-block; padding: 2px 8px; background: #e0f0ff; color: #0066cc; font-size: 0.8rem; font-weight: bold; border-radius: 4px; margin-left: 0; }
         
         /* 詳細頁專用膠囊分類標籤樣式 */
         .category-badges-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
@@ -103,10 +110,6 @@
         .sort-select:focus { border-color: #0066cc; }
         .all-water-list { display: flex; flex-direction: column; }
 
-        /* ⏱️ 全站頁尾計時器樣式 */
-        footer { background: #ffffff; border-top: 1px solid #eaeaea; padding: 20px; text-align: center; margin-top: auto; }
-        .timer-text { font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1rem; font-weight: bold; color: #0066cc; letter-spacing: 0.5px; margin-top: 4px; }
-
         /* ==================== 關於我們專屬樣式 (完全不修改保留) ==================== */
         .about-container { max-width: 800px; margin: 0 auto; }
         .main-title { font-size: 2rem; font-weight: 700; margin-bottom: 30px; letter-spacing: -0.5px; }
@@ -125,6 +128,10 @@
         .back-link-area { margin-top: 30px; }
         .back-link-area a { color: #0066cc; font-weight: 500; text-decoration: none; cursor: pointer; }
         .back-link-area a:hover { text-decoration: underline; }
+
+        /* ⏱️ 全站通用頁尾運行時間計時器樣式（極簡留白優化版） */
+        footer { background: transparent; padding: 40px 20px; text-align: center; margin-top: auto; }
+        .timer-text { font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1rem; font-weight: bold; color: #0066cc; letter-spacing: 0.5px; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -251,33 +258,33 @@
                 </div>
                 
                 <div class="detail-side">
-                    <div class="detail-side-item">
+                    <div>
                         <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">所屬單位</span>
                         <strong><a id="det-school-link" target="_blank" style="color: #1a1a1a;">-</a></strong>
                     </div>
-                    <div class="detail-side-item">
+                    <div>
                         <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">Threads</span>
                         <strong><a id="det-id-link" target="_blank" style="color: #0066cc;">-</a></strong>
                     </div>
-                    <div class="detail-side-item">
-                        <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">稱號 / 榮譽</span>
+                    <div>
+                        <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">稱號</span>
                         <div id="det-title" style="font-weight: bold; color: #1a1a1a; font-size: 1rem; line-height: 1.6;">-</div>
                     </div>
-                    <div class="detail-side-item">
+                    <div>
                         <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">品牌</span>
                         <strong><a id="det-brand-link" target="_blank" style="color: #1a1a1a;">-</a></strong>
                     </div>
                     
-                    <div class="detail-side-item">
-                        <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">快速探索分類</span>
+                    <div>
+                        <span style="color: #666; font-size: 0.9rem; display: block; margin-bottom: 2px;">分類</span>
                         <div id="det-category-badges" class="category-badges-container"></div>
                     </div>
 
-                    <div class="detail-side-item" style="border-top: 2px solid #eaeaea; padding-top: 15px;">
+                    <div style="margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 15px;">
                         <span style="font-size: 0.9rem; color: #666;">最新粉絲數量</span>
                         <div style="font-size: 2.2rem; font-weight: bold; color: #1a1a1a; margin-top: 2px;" id="det-followers">0</div>
                     </div>
-                    <div style="font-size: 0.75rem; color: #aaa; padding: 0 5px; line-height: 1.6;">
+                    <div style="font-size: 0.75rem; color: #aaa; margin-top: 15px; border-top: 1px solid #f9f9f9; padding-top: 8px; line-height: 1.6;">
                         數據更新：<span id="det-time" style="color: #666; font-weight: 500;">-</span><br>
                         加入日期：<span id="det-join-time" style="color: #666; font-weight: 500;">-</span>
                     </div>
@@ -391,9 +398,6 @@
     </footer>
 
     <script>
-        // ⏱️ 計時器設定：請在此修改專案的創立上線日期時間 (格式: YYYY-MM-DDTHH:mm:ss)
-        const START_DATE = new Date("2026-06-25T02:53:00");
-
         const SUPABASE_URL = "https://azezhxlatzfgltzqguoa.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_FPMDx4PO77A99RzoVbs3XQ_P9R5aOFP";
 
@@ -431,31 +435,6 @@
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
             return R * c;
         }
-
-        /* ⏱️ 動態更新連續運行時間的函式 */
-        function updateUptimeClock() {
-            const now = new Date();
-            const diff = now - START_DATE;
-            
-            if (diff < 0) {
-                document.getElementById("uptime-timer").innerText = "00 天 00 時 00 分 00 秒";
-                return;
-            }
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const minutes = Math.floor((diff / (1000 * 60)) % 60);
-            const seconds = Math.floor((diff / 1000) % 60);
-
-            const pad = (num) => String(num).padStart(2, '0');
-
-            document.getElementById("uptime-timer").innerText = 
-                `${pad(days)} 天 ${pad(hours)} 時 ${pad(minutes)} 分 ${pad(seconds)} 秒`;
-        }
-
-        // 啟動計時器，每秒鐘更新一次
-        setInterval(updateUptimeClock, 1000);
-        updateUptimeClock(); // 網頁載入時立刻跑一次避免畫面閃爍 00
 
         async function fetchInitialData() {
             try {
@@ -496,6 +475,7 @@
             }
         }
 
+        /* 🚀 【核心路由大修正】結構化路由映射與融合關於我們 */
         function handleRouting() {
             const hash = window.location.hash || '#/';
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
@@ -601,6 +581,7 @@
             renderHomePage();
         });
 
+        /* 🎛️ 總覽層級多路徑動態渲染處理 */
         function renderAllSubViews(subViewType) {
             document.getElementById('all-view').classList.remove('hidden');
             const titleEl = document.getElementById('all-view-main-title');
@@ -731,7 +712,7 @@
                                 },
                                 () => { alert("無法取得定位，距離排序失效。"); sortSelect.value = "followers-desc"; updateFilteredList(); }
                             );
-                        } else { alert("瀏覽器不支援定位"); sortSelect.value = "followers-desc"; }
+                        }
                     } else { updateFilteredList(); }
                 };
                 searchInput.oninput = updateFilteredList;
@@ -803,6 +784,7 @@
             }
         }
 
+        /* 🔍 深度鑽取 (Drill-down) 頁面渲染 */
         function renderDrilldownPage(targetName, type) {
             document.getElementById('drilldown-view').classList.remove('hidden');
             const titleEl = document.getElementById('drilldown-view-title');
@@ -924,9 +906,9 @@
 
             const badgesContainer = document.getElementById('det-category-badges');
             let badgesHtml = "";
-            if (item.school) { badgesHtml += `<a href="#/unit/${encodeURIComponent(item.school.trim())}" class="gray-badge">${item.school.trim()}</a>`; }
-            if (item.city) { badgesHtml += `<a href="#/city/${encodeURIComponent(item.city.trim())}" class="gray-badge">${item.city.trim()}</a>`; }
-            if (item.brand) { badgesHtml += `<a href="#/brand/${encodeURIComponent(item.brand.trim())}" class="gray-badge">${item.brand.trim()}</a>`; }
+            if (item.school) { badgesHtml += `<a href="#/all/units" class="gray-badge">${item.school.trim()}</a>`; }
+            if (item.city) { badgesHtml += `<a href="#/all/cities" class="gray-badge">${item.city.trim()}</a>`; }
+            if (item.brand) { badgesHtml += `<a href="#/all/brands" class="gray-badge">${item.brand.trim()}</a>`; }
             if (item.isClub === "是" || item.isClub === "慢") { badgesHtml += `<a href="#/club" class="gray-badge">飲水機研究社</a>`; }
             badgesContainer.innerHTML = badgesHtml || `<span style="color:#aaa;">-</span>`;
 
@@ -949,6 +931,7 @@
             document.getElementById('det-join-time').innerText = item.createTime ? item.createTime.substring(0, 10) : "-";
         }
 
+        /* ==================== 發展里程碑數據非同步撈取邏輯 (完全不修改保留) ==================== */
         async function fetchMilestones() {
             const container = document.getElementById('milestone-list');
             try {
@@ -982,6 +965,32 @@
 
         window.addEventListener('hashchange', handleRouting);
         fetchInitialData();
+
+        // ⏱️ 計時器設定（預設建站時間：2026-06-25 02:53:00，可根據需求調整）
+        const START_DATE = new Date("2026-06-25T02:53:00");
+
+        function updateUptimeClock() {
+            const now = new Date();
+            const diff = now - START_DATE;
+            
+            if (diff < 0) {
+                document.getElementById("uptime-timer").innerText = "00 天 00 時 00 分 00 秒";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            const pad = (num) => String(num).padStart(2, '0');
+
+            document.getElementById("uptime-timer").innerText = 
+                `${pad(days)} 天 ${pad(hours)} 時 ${pad(minutes)} 分 ${pad(seconds)} 秒`;
+        }
+
+        setInterval(updateUptimeClock, 1000);
+        updateUptimeClock();
     </script>
 </body>
 </html>
