@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -6,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>飲水機觀測站</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入 Font Awesome 提供 Threads 等社群圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* 精緻的極簡風格全面回歸 */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -110,7 +111,7 @@
         .sort-select:focus { border-color: #0066cc; }
         .all-water-list { display: flex; flex-direction: column; }
 
-        /* ==================== 關於我們專屬樣式 (完全不修改保留) ==================== */
+        /* ==================== 關於我們專屬樣式 ==================== */
         .about-container { max-width: 800px; margin: 0 auto; }
         .main-title { font-size: 2rem; font-weight: 700; margin-bottom: 30px; letter-spacing: -0.5px; }
         .about-container h2 { font-size: 1.5rem; font-weight: 600; color: #1a1a1a; padding-bottom: 8px; border-bottom: 1px solid #1a1a1a; margin-bottom: 25px; }
@@ -129,9 +130,80 @@
         .back-link-area a { color: #0066cc; font-weight: 500; text-decoration: none; cursor: pointer; }
         .back-link-area a:hover { text-decoration: underline; }
 
-        /* ⏱️ 全站通用頁尾運行時間計時器樣式（極簡留白優化版） */
-        footer { background: transparent; padding: 40px 20px; text-align: center; margin-top: auto; }
-        .timer-text { font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 1rem; font-weight: bold; color: #0066cc; letter-spacing: 0.5px; margin-top: 4px; }
+        /* ⏱️ 全站通用頁尾與 Apple 極簡風 Footer 樣式 */
+        footer { 
+            background: transparent; 
+            padding: 40px 20px; 
+            text-align: center; 
+            margin-top: auto; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .timer-text { 
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace; 
+            font-size: 0.95rem; 
+            font-weight: bold; 
+            color: #0066cc; 
+            letter-spacing: 0.5px; 
+            margin-top: 2px; 
+        }
+
+        /*  Apple 極簡風 Footer 專屬 CSS */
+        .apple-footer-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 8px 12px;
+            font-size: 0.73rem;
+            font-weight: 200;
+            color: rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.2px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 16px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .apple-footer-meta span, 
+        .apple-footer-meta a {
+            color: rgba(0, 0, 0, 0.4);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .apple-footer-meta a:hover {
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .apple-footer-meta .divider {
+            color: rgba(0, 0, 0, 0.2);
+            user-select: none;
+        }
+
+        .threads-icon-link {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+
+        .threads-icon-link i {
+            font-size: 0.82rem;
+        }
+
+        @media (max-width: 600px) {
+            .apple-footer-meta {
+                flex-direction: column;
+                gap: 6px;
+            }
+            .apple-footer-meta .divider {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -391,10 +463,24 @@
 
     </div>
 
-    <!-- ⏱️ 全站通用頁尾運行時間計時器 -->
+    <!-- ⏱️ 全站通用頁尾與 Apple 極簡風 Footer -->
     <footer>
         <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">觀測站已持續運行</p>
         <div id="uptime-timer" class="timer-text">00 天 00 時 00 分 00 秒</div>
+
+        <!-- 🚀 飲水機觀測站極簡風全域頁尾 (Footer) -->
+        <div class="apple-footer-meta">
+            <span>v1.2.1</span>
+            <span class="divider">|</span>
+            <span>Powered by Vercel &amp; Supabase</span>
+            <span class="divider">|</span>
+            <span>
+                &copy; 2026 Made by @waterdispenserylshlinfeng2f2nd
+                <a href="https://www.threads.net/@waterdispenserylshlinfeng2f2nd" target="_blank" class="threads-icon-link" title="Threads">
+                    <i class="fa-brands fa-threads"></i>
+                </a>
+            </span>
+        </div>
     </footer>
 
     <script>
@@ -475,7 +561,7 @@
             }
         }
 
-        /* 🚀 【核心路由大修正】結構化路由映射與融合關於我們 */
+        /* 🚀 結構化路由映射與融合關於我們 */
         function handleRouting() {
             const hash = window.location.hash || '#/';
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
@@ -931,7 +1017,7 @@
             document.getElementById('det-join-time').innerText = item.createTime ? item.createTime.substring(0, 10) : "-";
         }
 
-        /* ==================== 發展里程碑數據非同步撈取邏輯 (完全不修改保留) ==================== */
+        /* ==================== 發展里程碑數據非同步撈取邏輯 ==================== */
         async function fetchMilestones() {
             const container = document.getElementById('milestone-list');
             try {
@@ -966,7 +1052,7 @@
         window.addEventListener('hashchange', handleRouting);
         fetchInitialData();
 
-        // ⏱️ 計時器設定（預設建站時間：2026-06-25 02:53:00，可根據需求調整）
+        // ⏱️ 計時器設定
         const START_DATE = new Date("2026-06-25T02:53:00");
 
         function updateUptimeClock() {
