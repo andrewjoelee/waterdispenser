@@ -13,6 +13,7 @@
         /* 精緻的極簡風格全面回歸 */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         
+        /* 💡 修正 html 與 body 佈局，確保全螢幕背景色統一，消除白色斷層 */
         html, body { min-height: 100vh; background-color: #fafafa; }
         body { color: #1a1a1a; line-height: 1.5; display: flex; flex-direction: column; }
         
@@ -24,6 +25,7 @@
         nav a { margin-left: 15px; color: #666; font-size: 0.95rem; text-decoration: none; }
         nav a.active { color: #1a1a1a; font-weight: bold; }
         
+        /* 💡 讓 container 自動填滿剩餘垂直空間（flex: 1），並補上 width: 100% 確保橫向完美撐開 */
         .container { width: 100%; max-width: 1000px; margin: 30px auto; padding: 0 20px; flex: 1; }
         
         .loading { text-align: center; padding: 50px; color: #888; font-size: 1.1rem; }
@@ -33,21 +35,21 @@
         .card { background: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
         h2 { font-size: 1.3rem; margin-bottom: 15px; font-weight: 600; color: #333; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
         
-        /* 首頁佈局調整 */
+        /* 首頁佈局調整：上下堆疊，寬螢幕不並排 */
         .home-grid-layout { display: flex; flex-direction: column; gap: 20px; margin-bottom: 25px; }
         .home-grid-layout .card { width: 100%; margin-bottom: 0; }
 
         /* 圖表專用容器 */
         .chart-container { position: relative; margin: auto; height: 320px; width: 100%; display: flex; justify-content: center; }
         
-        /* 列表基礎 */
+        /* 列表基礎（用於幹部排行等非全區塊點擊處） */
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
         .list-item:last-child { border-bottom: none; }
         .rank-badge { font-weight: bold; margin-right: 10px; color: #888; min-width: 25px; display: inline-block; }
         .rank-1, .rank-2, .rank-3 { color: #1a1a1a; }
         .toggle-btn { display: block; width: 100%; text-align: center; padding: 10px; background: #f5f5f5; border: 1px solid #eaeaea; border-radius: 6px; margin-top: 10px; color: #555; font-size: 0.9rem; cursor: pointer; }
         
-        /* 卡片互動感 */
+        /* 全站統一卡片互動感（全區塊點擊、Apple 式懸停位移與投影） */
         .clickable-card { 
             display: flex; 
             justify-content: space-between; 
@@ -68,11 +70,12 @@
         }
         .clickable-card:last-child { margin-bottom: 0; }
         
+        /* 總覽入口大廳專用文字樣式 */
         .lobby-card-title { font-size: 1.15rem; font-weight: 600; color: #1a1a1a; }
         .lobby-card-desc { font-size: 0.85rem; color: #666; margin-top: 4px; }
         .lobby-arrow { font-size: 1.2rem; color: #ccc; font-weight: 300; }
 
-        /* 詳細頁排版 */
+        /* 詳細頁與社團專用雙欄排版 */
         .detail-layout { display: flex; flex-direction: column; gap: 24px; }
         @media(min-width: 768px) { .detail-layout { flex-direction: row; } }
         .detail-main { flex: 1.2; }
@@ -84,10 +87,12 @@
         .detail-address-block { margin-top: 15px; font-size: 1rem; color: #333; background: #fff; border: 1px solid #eaeaea; padding: 12px 15px; border-radius: 6px; }
         .badge { display: inline-block; padding: 2px 8px; background: #e0f0ff; color: #0066cc; font-size: 0.8rem; font-weight: bold; border-radius: 4px; margin-left: 0; }
         
+        /* 詳細頁專用膠囊分類標籤樣式 */
         .category-badges-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
         .gray-badge { display: inline-block; padding: 5px 14px; background: #f0f0f0; color: #1a1a1a; font-size: 0.85rem; font-weight: 500; border-radius: 20px; transition: all 0.2s; border: 1px solid #eaeaea; text-decoration: none !important; }
         .gray-badge:hover { background: #e8e8e8; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         
+        /* 社團舊版精華樣式優化 */
         .club-header { text-align: center; padding: 30px 0; border-bottom: 2px solid #1a1a1a; margin-bottom: 30px; }
         .club-header h1 { font-size: 2.2rem; font-weight: bold; color: #1a1a1a; letter-spacing: 1px; }
         
@@ -100,7 +105,7 @@
         .exam-btn { display: block; text-align: center; padding: 15px; background: #1a1a1a; color: #ffffff; border-radius: 6px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.2s; border: none; cursor: pointer; }
         .exam-btn:hover { background: #333; text-decoration: none; }
 
-        /* 搜尋過濾列 */
+        /* 🔍 全部總覽頁面專用篩選欄樣式 */
         .search-filter-bar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         @media(min-width: 576px) { .search-filter-bar { flex-direction: row; } }
         .search-input { flex: 1; padding: 10px 15px; border: 1px solid #eaeaea; border-radius: 6px; font-size: 1rem; outline: none; transition: border-color 0.2s; }
@@ -109,7 +114,7 @@
         .sort-select:focus { border-color: #0066cc; }
         .all-water-list { display: flex; flex-direction: column; }
 
-        /* 關於我們 */
+        /* ==================== 關於我們專屬樣式 ==================== */
         .about-container { max-width: 800px; margin: 0 auto; }
         .main-title { font-size: 2rem; font-weight: 700; margin-bottom: 30px; letter-spacing: -0.5px; }
         .about-container h2 { font-size: 1.5rem; font-weight: 600; color: #1a1a1a; padding-bottom: 8px; border-bottom: 1px solid #1a1a1a; margin-bottom: 25px; }
@@ -119,44 +124,146 @@
         .tech-item h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; color: #1a1a1a; }
         .tech-item p { font-size: 1rem; color: #444; margin-bottom: 0; }
         
-        .milestone-container { display: flex; flex-direction: column; gap: 8px; max-width: 600px; margin: 0 auto; }
-        .milestone-item { display: flex; justify-content: flex-start; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #eaeaea; }
+        /* 修正後的里程碑樣式：兩欄左對齊，提升高訊號雜訊比 */
+        .milestone-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            max-width: 600px; /* 限制寬度讓視覺更集中 */
+            margin: 0 auto;  /* 居中顯示 */
+        }
+
+        .milestone-item { 
+            display: flex; 
+            justify-content: flex-start; /* 改為左對齊 */
+            align-items: flex-start; 
+            padding: 12px 0; 
+            border-bottom: 1px solid #eaeaea; 
+        }
+
         .milestone-item:last-child { border-bottom: none; }
-        .milestone-date { font-weight: 500; font-size: 0.95rem; color: #86868b; flex: 0 0 110px; }
-        .milestone-title { font-size: 0.95rem; color: #1a1a1a; flex: 1; text-align: left; line-height: 1.4; }
+
+        .milestone-date { 
+            font-weight: 500; 
+            font-size: 0.95rem; 
+            color: #86868b; /* Apple 灰色 */
+            flex: 0 0 110px; /* 固定日期寬度，確保右側內容對齊一線 */
+        }
+
+        .milestone-title { 
+            font-size: 0.95rem; 
+            color: #1a1a1a; 
+            flex: 1; 
+            text-align: left; /* 強制內容向左靠攏 */
+            line-height: 1.4;
+        }
 
         .error-msg { text-align: center; color: #888; font-size: 1rem; padding: 30px 0; }
         .back-link-area { margin-top: 30px; }
         .back-link-area a { color: #0066cc; font-weight: 500; text-decoration: none; cursor: pointer; }
         .back-link-area a:hover { text-decoration: underline; }
 
-        /* 頁尾 */
-        footer { background: transparent; padding: 40px 20px; text-align: center; margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .timer-text { font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace; font-size: 0.95rem; font-weight: bold; color: #0066cc; letter-spacing: 0.5px; margin-top: 2px; }
-
-        .apple-footer-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 12px; font-size: 0.73rem; font-weight: 200; color: rgba(0, 0, 0, 0.4); letter-spacing: 0.2px; margin-top: 10px; border-top: 1px solid rgba(0, 0, 0, 0.05); padding-top: 16px; width: 100%; max-width: 800px; }
-        .apple-footer-meta span, .apple-footer-meta a { color: rgba(0, 0, 0, 0.4); text-decoration: none; transition: color 0.2s ease; }
-        .apple-footer-meta a:hover { color: rgba(0, 0, 0, 0.7); }
-        .apple-footer-meta .divider { color: rgba(0, 0, 0, 0.2); user-select: none; }
-        .threads-icon-link { display: inline-flex; align-items: center; margin-left: 2px; vertical-align: middle; }
-        .threads-icon-link i { font-size: 0.82rem; }
-
-        @media (max-width: 600px) {
-            .apple-footer-meta { flex-direction: column; gap: 6px; }
-            .apple-footer-meta .divider { display: none; }
+        /* ⏱️ 全站通用頁尾與 Apple 極簡風 Footer 樣式 */
+        footer { 
+            background: transparent; 
+            padding: 40px 20px; 
+            text-align: center; 
+            margin-top: auto; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .timer-text { 
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace; 
+            font-size: 0.95rem; 
+            font-weight: bold; 
+            color: #0066cc; 
+            letter-spacing: 0.5px; 
+            margin-top: 2px; 
         }
 
-        /* 使用者選單與 Google 登入樣式 */
+        /*  Apple 極簡風 Footer 專屬 CSS */
+        .apple-footer-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 8px 12px;
+            font-size: 0.73rem;
+            font-weight: 200;
+            color: rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.2px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding-top: 16px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .apple-footer-meta span, 
+        .apple-footer-meta a {
+            color: rgba(0, 0, 0, 0.4);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .apple-footer-meta a:hover {
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .apple-footer-meta .divider {
+            color: rgba(0, 0, 0, 0.2);
+            user-select: none;
+        }
+
+        .threads-icon-link {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+
+        .threads-icon-link i {
+            font-size: 0.82rem;
+        }
+
+        @media (max-width: 600px) {
+            .apple-footer-meta {
+                flex-direction: column;
+                gap: 6px;
+            }
+            .apple-footer-meta .divider {
+                display: none;
+            }
+        }
+
+        /* 🚀 使用者選單與 Google 登入樣式 (v1.4.0) */
         .user-menu-container { position: relative; margin-left: 15px; }
-        .avatar-btn { border: none; background: #f0f0f0; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; overflow: hidden; padding: 0; }
+        .avatar-btn { 
+            border: none; background: #f0f0f0; width: 40px; height: 40px; 
+            border-radius: 50%; cursor: pointer; display: flex; 
+            align-items: center; justify-content: center; transition: all 0.3s ease; 
+            overflow: hidden; padding: 0;
+        }
+        /* 驗證成功的淡淡淡綠色燈號 */
         .avatar-btn.verified { background: #e3f9e5; border: 1.5px solid #34c759; }
         .avatar-btn.verified i { color: #34c759; }
 
-        #user-dropdown { position: absolute; right: 0; top: 55px; width: 260px; z-index: 1000; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #eaeaea; }
-        .google-login-btn { display: flex; justify-content: center; align-items: center; gap: 10px; width: 100%; padding: 12px; background: #fff; border: 1px solid #d2d2d7; border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 10px; transition: transform 0.2s; font-weight: 500; }
+        #user-dropdown { 
+            position: absolute; right: 0; top: 55px; width: 240px; z-index: 1000; 
+            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            padding: 15px; background: #fff; border-radius: 12px; border: 1px solid #eaeaea; 
+        }
+        .google-login-btn { 
+            display: flex; justify-content: center; align-items: center; gap: 10px; 
+            width: 100%; padding: 12px; background: #fff; border: 1px solid #d2d2d7; 
+            border-radius: 8px; cursor: pointer; font-size: 0.9rem; margin-top: 10px; 
+            transition: transform 0.2s; font-weight: 500; 
+        }
         .google-login-btn:hover { transform: translateY(-2px); background: #f5f5f7; }
 
-        /* 討論區留言板 */
+        /* 🧵 Proposal A: Threads 極簡線條風 */
         .comment-thread { margin-top: 25px; border-top: 1px solid #f5f5f7; padding-top: 20px; }
         .comment-item { display: flex; gap: 12px; padding: 16px 0; border-bottom: 1px solid #f9f9f9; }
         .comment-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #eee; }
@@ -167,12 +274,21 @@
         .comment-textarea { width: 100%; min-height: 80px; padding: 10px; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 0.9rem; margin-bottom: 10px; outline: none; resize: vertical; }
         .comment-textarea:focus { border-color: #0066cc; }
 
+        /* 🌳 層次化回覆樣式 */
         .reply-group { margin-left: 48px; border-left: 2px solid #f5f5f7; padding-left: 15px; display: none; }
-        .reply-btn { background: none; border: none; color: #0066cc; font-size: 0.8rem; padding: 0; cursor: pointer; margin-top: 8px; font-weight: 500; }
-        .show-replies-btn { font-size: 0.75rem; color: #86868b; background: #f5f5f7; border-radius: 20px; padding: 4px 12px; border: none; cursor: pointer; margin-top: 5px; }
-        
-        .nickname-input { width: 100%; padding: 6px 10px; border: 1px solid #d2d2d7; border-radius: 6px; font-size: 0.8rem; outline: none; }
-        .nickname-input:focus { border-color: #0066cc; }
+        .reply-btn { 
+            background: none; border: none; color: #0066cc; font-size: 0.8rem; 
+            padding: 0; cursor: pointer; margin-top: 8px; font-weight: 500;
+        }
+        .show-replies-btn {
+            font-size: 0.75rem; color: #86868b; background: #f5f5f7; 
+            border-radius: 20px; padding: 4px 12px; border: none; cursor: pointer; margin-top: 5px;
+        }
+        /* 暱稱修改框樣式 */
+        .nickname-input { 
+            width: 100%; padding: 8px; border: 1px solid #d2d2d7; 
+            border-radius: 8px; font-size: 0.85rem; margin-bottom: 10px; 
+        }
     </style>
 </head>
 <body>
@@ -198,21 +314,22 @@
                             <span>以 Google 帳號繼續</span>
                         </button>
                     </div>
-                    
-                    <!-- 🚀 尋找 user-info-content 區塊 (已升級包含觀測員暱稱設定) -->
+                    <!-- 🚀 尋找 user-info-content 區塊 -->
                     <div id="user-info-content" class="hidden">
                         <p id="user-email" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;"></p>
                         <p style="font-size: 0.75rem; color: #34c759; margin-bottom: 12px;">
                             <i class="fa-solid fa-circle-check"></i> 已通過 Google 驗證
                         </p>
 
-                        <!-- 🏷️ 個人檔案設定區 -->
+                        <!-- 🏷️ 個人檔案設定區 (已注入) -->
                         <div style="border-top: 1px solid #f5f5f7; padding-top: 12px; margin-bottom: 12px;">
                             <label style="font-size: 0.7rem; color: #86868b; display: block; margin-bottom: 5px;">觀測員暱稱</label>
                             <div style="display: flex; gap: 8px;">
-                                <input type="text" id="header-nickname-field" class="nickname-input" placeholder="輸入您的暱稱...">
-                                <button onclick="updateNickname('header-nickname-field')" 
-                                    style="background: #0066cc; color: white; border: none; border-radius: 6px; padding: 0 10px; font-size: 0.75rem; cursor: pointer; flex-shrink: 0;">
+                                <input type="text" id="header-nickname-field" 
+                                    style="flex: 1; padding: 6px 10px; border: 1px solid #d2d2d7; border-radius: 6px; font-size: 0.8rem;" 
+                                    placeholder="輸入您的暱稱...">
+                                <button onclick="updateNickname()" 
+                                    style="background: #0066cc; color: white; border: none; border-radius: 6px; padding: 0 10px; font-size: 0.75rem; cursor: pointer;">
                                     儲存
                                 </button>
                             </div>
@@ -371,7 +488,7 @@
                 </div>
             </div>
 
-            <!-- 觀測員討論區 -->
+            <!-- 🚀 第三階段：HTML 結構注入 (留言板掛載點) -->
             <div class="card" style="margin-top: 20px;">
                 <h3>觀測員討論區</h3>
                 
@@ -380,7 +497,7 @@
                     <label style="font-size: 0.8rem; color: #86868b;">您的觀測暱稱：</label>
                     <div style="display: flex; gap: 10px; margin-top: 5px;">
                         <input type="text" id="user-nickname-field" class="nickname-input" placeholder="設定您的帥氣暱稱...">
-                        <button class="badge" style="height: 35px; cursor: pointer;" onclick="updateNickname('user-nickname-field')">儲存</button>
+                        <button class="badge" style="height: 35px; cursor: pointer;" onclick="updateNickname()">儲存</button>
                     </div>
                 </div>
 
@@ -390,7 +507,7 @@
                 </div>
 
                 <div id="threaded-comments" class="comment-thread">
-                    <!-- 留言內容渲染點 -->
+                    <!-- 留言 A, B, C 將在此渲染 -->
                 </div>
             </div>
 
@@ -532,24 +649,19 @@
         let myPieChart = null;
         let userLocation = null; 
 
-        // 🔄 強化檢查：自動拉取並發佈暱稱至所有相關輸入框
+        // 🔄 強化檢查：登入時自動填入現有暱稱
         async function syncNicknameDisplay(userId) {
-            if (!userId) return;
-            try {
-                const { data, error } = await supabaseClient
-                    .from('profiles')
-                    .select('nickname')
-                    .eq('id', userId)
-                    .maybeSingle();
-                
-                if (data && data.nickname) {
-                    const headerField = document.getElementById('header-nickname-field');
-                    const detailField = document.getElementById('user-nickname-field');
-                    if (headerField) headerField.value = data.nickname;
-                    if (detailField) detailField.value = data.nickname;
-                }
-            } catch (err) {
-                console.error("讀取暱稱時發生錯誤:", err.message);
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('nickname')
+                .eq('id', userId)
+                .single();
+            
+            if (data && data.nickname) {
+                const headerField = document.getElementById('header-nickname-field');
+                const userField = document.getElementById('user-nickname-field');
+                if (headerField) headerField.value = data.nickname;
+                if (userField) userField.value = data.nickname;
             }
         }
 
@@ -576,7 +688,7 @@
                     avatarIcon.style.display = 'none';
                 }
 
-                // 呼叫同步暱稱邏輯
+                // 自動同步顯示暱稱
                 await syncNicknameDisplay(user.id);
             } else {
                 avatarBtn.classList.remove('verified');
@@ -1134,44 +1246,44 @@
             fetchThreadedComments(userId);
         }
 
-        /* 🚀 核心邏輯：更新/儲存暱稱 (相容 header 與 頁面內建輸入框) */
-        async function updateNickname(fieldId = 'header-nickname-field') {
-            const fieldEl = document.getElementById(fieldId);
-            const newName = fieldEl ? fieldEl.value.trim() : '';
-
-            if (!newName) {
-                alert("請輸入暱稱！");
-                return;
-            }
+        /* 🚀 核心邏輯：更新/儲存暱稱 (整合版) */
+        async function updateNickname() {
+            // 優先讀取 header 中的欄位，若無則嘗試讀取個人頁面欄位
+            const headerInput = document.getElementById('header-nickname-field');
+            const pageInput = document.getElementById('user-nickname-field');
+            const newName = (headerInput ? headerInput.value : pageInput ? pageInput.value : '').trim();
+            
+            if (!newName) return alert("請輸入暱稱！");
 
             const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) {
-                alert("請先登入帳號！");
-                return;
-            }
+            if (!user) return alert("請先登入帳號！");
 
             const { error } = await supabaseClient
                 .from('profiles')
                 .upsert({ 
                     id: user.id, 
                     nickname: newName, 
-                    avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || null,
-                    updated_at: new Date().toISOString()
+                    avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture,
+                    updated_at: new Date()
                 });
 
             if (!error) {
                 alert("觀測身分校準成功！");
-                // 刷清畫面上所有的暱稱輸入框
-                await syncNicknameDisplay(user.id);
+                // 同步兩個欄位的值
+                if (headerInput) headerInput.value = newName;
+                if (pageInput) pageInput.value = newName;
 
-                // 若留言板更新函式存在，自動重新載入留言
-                if (typeof fetchThreadedComments === "function" && window.location.hash.startsWith('#/user/')) {
-                    const currentId = safeDecode(window.location.hash.substring(7));
-                    fetchThreadedComments(currentId);
+                // 更新成功後，重新刷清頁面留言板，讓暱稱同步生效
+                const currentHash = window.location.hash;
+                if (currentHash.startsWith('#/user/')) {
+                    const currentId = safeDecode(currentHash.substring(7));
+                    if (typeof fetchThreadedComments === "function" && currentId) {
+                        fetchThreadedComments(currentId);
+                    }
                 }
             } else {
                 console.error("更新失敗:", error.message);
-                alert("更新失敗：" + error.message);
+                alert("暱稱更新失敗：" + error.message);
             }
         }
 
@@ -1210,7 +1322,7 @@
             }
         }
 
-        // 抓取並渲染留言
+        // 2. 抓取並渲染留言 (包含回覆)
         async function fetchThreadedComments(dispenserId) {
             const { data, error } = await supabaseClient
                 .from('comments')
@@ -1240,15 +1352,18 @@
                         
                         <button class="reply-btn" onclick="toggleReplyBox('${c.id}')">回覆</button>
                         
+                        <!-- 回覆按鈕 -->
                         <button class="show-replies-btn" onclick="toggleReplies('${c.id}')">
                             顯示回覆 (${replies.filter(r => r.parent_id === c.id).length})
                         </button>
                         
+                        <!-- 回覆輸入框區塊 -->
                         <div id="reply-box-${c.id}" class="hidden" style="margin-top:10px;">
                             <textarea id="reply-input-${c.id}" class="comment-textarea" placeholder="寫下您的回覆..." style="min-height:50px;"></textarea>
                             <button class="exam-btn" style="width: auto; padding: 4px 12px; font-size: 0.8rem;" onclick="postComment('${c.id}')">送出回覆</button>
                         </div>
 
+                        <!-- 回覆清單 -->
                         <div id="replies-${c.id}" class="reply-group">
                             ${replies.filter(r => r.parent_id === c.id).map(r => `
                                 <div class="comment-item">
@@ -1265,17 +1380,19 @@
             `).join('');
         }
 
+        // 切換回覆顯示邏輯
         function toggleReplies(id) {
             const el = document.getElementById(`replies-${id}`);
             el.style.display = el.style.display === 'block' ? 'none' : 'block';
         }
 
+        // 切換回覆輸入框顯示
         function toggleReplyBox(id) {
             const el = document.getElementById(`reply-box-${id}`);
             el.classList.toggle('hidden');
         }
 
-        /* 發展里程碑數據撈取 */
+        /* ==================== 發展里程碑數據非同步撈取邏輯 ==================== */
         async function fetchMilestones() {
             const container = document.getElementById('milestone-list');
             try {
