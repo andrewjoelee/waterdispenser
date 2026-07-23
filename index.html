@@ -244,6 +244,7 @@
             border: none; background: #f0f0f0; width: 40px; height: 40px; 
             border-radius: 50%; cursor: pointer; display: flex; 
             align-items: center; justify-content: center; transition: all 0.3s ease; 
+            overflow: hidden; padding: 0;
         }
         /* 驗證成功的淡淡淡綠色燈號 */
         .avatar-btn.verified { background: #e3f9e5; border: 1.5px solid #34c759; }
@@ -273,10 +274,13 @@
             <a href="#/club" id="nav-club">飲水機研究社</a>
             <a href="#/about" id="nav-about">關於我們</a>
             
-            <!-- 🚀 使用者控制中心 -->
+            <!-- 🚀 第一步：HTML 結構微調 (加入隱藏的 Google 頭像 img 標籤) -->
             <div class="user-menu-container">
                 <button class="avatar-btn" id="avatar-main-btn" onclick="toggleUserDropdown()">
-                    <i class="fa-solid fa-user" style="color:#86868b;"></i>
+                    <!-- 預設的人頭圖標 -->
+                    <i class="fa-solid fa-user" id="avatar-icon" style="color:#86868b;"></i>
+                    <!-- 🚀 新增：用來顯示 Google 頭像的圖片標籤 -->
+                    <img id="user-avatar-img" src="" style="width: 100%; height: 100%; border-radius: 50%; display: none; object-fit: cover;">
                 </button>
                 <div id="user-dropdown" class="card">
                     <div id="auth-content">
@@ -579,27 +583,42 @@
         let myPieChart = null;
         let userLocation = null; 
 
-        // 1. 初始化檢查登入狀態
+        // 🚀 第二步：JavaScript 邏輯注入 (更新 checkLoginStatus 以讀取與顯示 Google 頭像)
         async function checkLoginStatus() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             const avatarBtn = document.getElementById('avatar-main-btn');
+            const avatarIcon = document.getElementById('avatar-icon');
+            const avatarImg = document.getElementById('user-avatar-img');
             const authContent = document.getElementById('auth-content');
             const userContent = document.getElementById('user-info-content');
 
             if (user) {
-                avatarBtn.classList.add('verified'); // 點亮綠色燈號
+                // 1. 點亮專屬的「淡淡淡綠色」驗證燈號
+                avatarBtn.classList.add('verified');
                 authContent.classList.add('hidden');
                 userContent.classList.remove('hidden');
                 document.getElementById('user-email').innerText = user.email;
+
+                // 🚀 2. 抓取 Google 頭像網址並顯示
+                const googleAvatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
+                if (googleAvatarUrl) {
+                    avatarImg.src = googleAvatarUrl;
+                    avatarImg.style.display = 'block'; // 顯示圖片
+                    avatarIcon.style.display = 'none'; // 隱藏原本的灰色人頭 icon
+                }
+            } else {
+                // 確保未登入時回歸預設
+                avatarBtn.classList.remove('verified');
+                avatarImg.style.display = 'none';
+                avatarIcon.style.display = 'block';
             }
         }
 
-        // 🚀 修正版：強制要求 Google 彈出帳號選擇器
+        // 強制要求 Google 彈出帳號選擇器
         async function signInWithGoogle() {
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    // 關鍵：強制 Google 詢問要使用哪個帳號
                     queryParams: {
                         prompt: 'select_account' 
                     },
@@ -609,15 +628,13 @@
             if (error) console.error("Google 登入失敗:", error.message);
         }
 
-        // 3. 登出與 UI 切換（確保包含 signOut() 與 reload()）
+        // 3. 登出與 UI 切換
         async function handleSignOut() {
-            // 1. 通知 Supabase 清除 Token
             const { error } = await supabaseClient.auth.signOut();
             
             if (error) {
                 console.error("登出失敗:", error.message);
             } else {
-                // 2. 徹底重整頁面，確保所有全域變數與燈號歸零
                 window.location.reload(); 
             }
         }
