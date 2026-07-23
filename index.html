@@ -29,7 +29,6 @@
         .container { width: 100%; max-width: 1000px; margin: 30px auto; padding: 0 20px; flex: 1; }
         
         .loading { text-align: center; padding: 50px; color: #888; font-size: 1.1rem; }
-        .hidden { display: none !important; }
         
         /* 區塊樣式 */
         .card { background: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
@@ -263,8 +262,19 @@
 
         /* 🎨 第一階段：個人檔案頁核心樣式注入 */
         .profile-card { max-width: 600px; margin: 0 auto; text-align: left; padding: 40px 20px; }
-        .profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
-        .profile-avatar-large { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .profile-info-layout { display: flex; gap: 25px; align-items: center; margin-bottom: 30px; }
+        .profile-avatar-side { flex: 0 0 100px; }
+        .profile-meta-side { flex: 1; }
+
+        .profile-nickname-title { font-size: 1.8rem; font-weight: 700; color: #1d1d1f; margin: 0; }
+        .profile-id-tag { font-size: 1rem; color: #86868b; margin: 4px 0; font-family: monospace; }
+        .threads-status { font-size: 0.85rem; color: #0066cc; font-weight: 500; }
+
+        .profile-bio-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #f5f5f7; }
+        .profile-bio-box { 
+            background: #fbfbfd; border-radius: 12px; padding: 15px; 
+            font-size: 1rem; color: #1d1d1f; line-height: 1.6; min-height: 100px;
+        }
 
         .profile-input-group { margin-bottom: 20px; width: 100%; }
         .profile-label { font-size: 0.75rem; color: #86868b; font-weight: 500; margin-bottom: 6px; display: block; }
@@ -276,10 +286,13 @@
         .profile-field:disabled { color: #86868b; cursor: not-allowed; }
 
         .delete-account-btn { 
-            margin-top: 50px; color: #ff3b30; background: none; border: none; 
+            margin-top: 20px; color: #ff3b30; background: none; border: none; 
             cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; opacity: 0.6;
         }
         .delete-account-btn:hover { opacity: 1; }
+
+        /* 編輯模式專屬隱藏 */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -465,42 +478,57 @@
             </div>
         </div>
 
-        <!-- 🚀 第二階段：HTML 結構注入 (個人檔案編輯 View) -->
+        <!-- 🚀 第二階段：HTML 結構注入 (對齊手繪稿) -->
         <div id="profile-view" class="view hidden">
-            <div class="card profile-card">
-                <div class="profile-header">
-                    <img id="prof-avatar-img" src="https://via.placeholder.com/120" class="profile-avatar-large">
-                    <p style="font-size: 0.8rem; color: #0066cc;">Threads 尚未連接</p>
-                </div>
-
-                <!-- 暱稱 (任意編輯) -->
-                <div class="profile-input-group">
-                    <label class="profile-label">暱稱 (任意編輯)</label>
-                    <input type="text" id="prof-nickname-input" class="profile-field" placeholder="您的觀測員稱呼">
-                </div>
-
-                <!-- ID (七天編輯一次) -->
-                <div class="profile-input-group">
-                    <label class="profile-label">專屬 ID (七天可修改一次)</label>
-                    <div style="display: flex; align-items: center; background: #f5f5f7; border-radius: 10px;">
-                        <span style="padding-left: 15px; color: #86868b;">@</span>
-                        <input type="text" id="prof-display-id-input" class="profile-field" style="background:transparent;" placeholder="12345678">
+            <div class="card profile-card" style="max-width: 550px; margin: 0 auto;">
+                
+                <!-- 👁️ 檢視模式 (預設顯示) -->
+                <div id="prof-display-area">
+                    <div class="profile-info-layout">
+                        <div class="profile-avatar-side">
+                            <img id="view-prof-avatar" src="https://via.placeholder.com/100" class="profile-avatar-large" style="margin-bottom:0; width:100px; height:100px;">
+                        </div>
+                        <div class="profile-meta-side">
+                            <p class="profile-label" style="margin-bottom:2px;">暱稱</p>
+                            <h1 id="view-prof-nickname" class="profile-nickname-title">載入中...</h1>
+                            <p id="view-prof-id" class="profile-id-tag">@ --------</p>
+                            <p class="threads-status">Threads 尚未連接</p>
+                        </div>
                     </div>
-                    <p id="id-cooling-notice" style="font-size: 0.7rem; color: #ff9500; margin-top: 5px;" class="hidden"></p>
+
+                    <div class="profile-bio-section">
+                        <label class="profile-label">自介</label>
+                        <div id="view-prof-bio" class="profile-bio-box">這位觀測員很神秘，尚未留下自介。</div>
+                    </div>
+
+                    <!-- 只有本人看得到的編輯與註銷按鈕 -->
+                    <div id="own-profile-controls" class="hidden" style="margin-top: 30px;">
+                        <button class="exam-btn" style="width: 100%;" onclick="toggleProfileEdit(true)">編輯個人檔案</button>
+                        <button class="delete-account-btn" style="width: 100%; justify-content: center; margin-top:20px;" onclick="handleDeleteAccount()">
+                            <i class="fa-solid fa-trash-can"></i> 註銷帳號
+                        </button>
+                    </div>
                 </div>
 
-                <!-- 自介 (任意編輯) -->
-                <div class="profile-input-group">
-                    <label class="profile-label">自介</label>
-                    <textarea id="prof-bio-input" class="profile-field" rows="4" placeholder="嗨 我是的..."></textarea>
+                <!-- 🖋️ 編輯模式 (預設隱藏) -->
+                <div id="prof-edit-area" class="hidden">
+                    <h2 style="border:none; text-align:center; margin-bottom:25px;">校準觀測身分</h2>
+                    <div class="profile-input-group">
+                        <label class="profile-label">暱稱 (任意編輯)</label>
+                        <input type="text" id="edit-nickname-input" class="profile-field">
+                    </div>
+                    <div class="profile-input-group">
+                        <label class="profile-label">專屬 ID (七天可修改一次)</label>
+                        <input type="text" id="edit-display-id-input" class="profile-field">
+                        <p id="id-cooling-notice" style="font-size: 0.7rem; color: #ff9500; margin-top: 5px;" class="hidden"></p>
+                    </div>
+                    <div class="profile-input-group">
+                        <label class="profile-label">自介</label>
+                        <textarea id="edit-bio-input" class="profile-field" rows="4"></textarea>
+                    </div>
+                    <button class="exam-btn" style="width: 100%;" onclick="saveFullProfile()">儲存變更</button>
+                    <button class="toggle-btn" style="width: 100%; margin-top:10px;" onclick="toggleProfileEdit(false)">取消返回</button>
                 </div>
-
-                <button id="save-profile-btn" class="exam-btn" style="width: 100%; margin-top: 10px;" onclick="saveFullProfile()">儲存變更</button>
-
-                <!-- 註銷按鈕 (垃圾桶圖示) -->
-                <button class="delete-account-btn" onclick="handleDeleteAccount()">
-                    <i class="fa-solid fa-trash-can"></i> 註銷帳號
-                </button>
 
                 <div class="back-link-area" style="text-align: center; margin-top: 30px;">
                     <a onclick="window.history.back()">&larr; 返回前一頁</a>
@@ -817,6 +845,12 @@
 
         /* 🐍 第三階段：核心邏輯注入 (JavaScript) */
 
+        // 🔄 切換顯示與編輯模式
+        function toggleProfileEdit(showEdit) {
+            document.getElementById('prof-display-area').classList.toggle('hidden', showEdit);
+            document.getElementById('prof-edit-area').classList.toggle('hidden', !showEdit);
+        }
+
         // 協助取得當前 Auth User 並載入 Profile 頁
         async function fetchAndRenderCurrentProfile() {
             const { data: { user } } = await supabaseClient.auth.getUser();
@@ -828,10 +862,11 @@
             renderProfilePage(user.id);
         }
 
-        // 1. 路由控制：進入個人頁
+        // 🚀 渲染個人頁面 (View Mode First)
         async function renderProfilePage(profileId) {
             document.getElementById('profile-view').classList.remove('hidden');
-            
+            toggleProfileEdit(false); // 進入時強制先看檢視模式
+
             const { data: profile, error } = await supabaseClient
                 .from('profiles').select('*').eq('id', profileId).single();
 
@@ -840,44 +875,57 @@
                 return;
             }
 
-            // 填充數據
+            // 1. 填充檢視模式數據
             if (profile.avatar_url) {
-                document.getElementById('prof-avatar-img').src = profile.avatar_url;
+                document.getElementById('view-prof-avatar').src = profile.avatar_url;
             }
-            document.getElementById('prof-nickname-input').value = profile.nickname || "";
-            document.getElementById('prof-display-id-input').value = profile.display_id || "";
-            document.getElementById('prof-bio-input').value = profile.bio || "";
+            document.getElementById('view-prof-nickname').innerText = profile.nickname || "匿名觀測員";
+            document.getElementById('view-prof-id').innerText = `@${profile.display_id || '--------'}`;
+            document.getElementById('view-prof-bio').innerText = profile.bio || "這位觀測員很神秘，尚未留下自介。";
 
-            // 🏆 關鍵：冷卻期檢查
-            const idInput = document.getElementById('prof-display-id-input');
-            const coolingNotice = document.getElementById('id-cooling-notice');
-            
-            if (profile.last_id_change) {
-                const lastChange = new Date(profile.last_id_change);
-                const daysDiff = (new Date() - lastChange) / (1000 * 60 * 60 * 24);
+            // 2. 判斷權限：如果是本人，才顯示編輯與註銷按鈕
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (user && user.id === profileId) {
+                document.getElementById('own-profile-controls').classList.remove('hidden');
                 
-                if (daysDiff < 7) {
-                    idInput.disabled = true;
-                    coolingNotice.classList.remove('hidden');
-                    coolingNotice.innerText = `🔋 ID 冷卻中，還需 ${Math.ceil(7 - daysDiff)} 天即可再次修改。`;
+                // 預填編輯欄位
+                document.getElementById('edit-nickname-input').value = profile.nickname || "";
+                document.getElementById('edit-display-id-input').value = profile.display_id || "";
+                document.getElementById('edit-bio-input').value = profile.bio || "";
+
+                // 🏆 關鍵：冷卻期檢查 (七天可修改一次)
+                const idInput = document.getElementById('edit-display-id-input');
+                const coolingNotice = document.getElementById('id-cooling-notice');
+                
+                if (profile.last_id_change) {
+                    const lastChange = new Date(profile.last_id_change);
+                    const daysDiff = (new Date() - lastChange) / (1000 * 60 * 60 * 24);
+                    
+                    if (daysDiff < 7) {
+                        idInput.disabled = true;
+                        coolingNotice.classList.remove('hidden');
+                        coolingNotice.innerText = `🔋 ID 冷卻中，還需 ${Math.ceil(7 - daysDiff)} 天即可再次修改。`;
+                    } else {
+                        idInput.disabled = false;
+                        coolingNotice.classList.add('hidden');
+                    }
                 } else {
                     idInput.disabled = false;
                     coolingNotice.classList.add('hidden');
                 }
             } else {
-                idInput.disabled = false;
-                coolingNotice.classList.add('hidden');
+                document.getElementById('own-profile-controls').classList.add('hidden');
             }
         }
 
-        // 2. 儲存變更邏輯
+        // 3. 儲存變更邏輯
         async function saveFullProfile() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             if (!user) return alert("連動已中斷，請重新登入");
 
-            const newNickname = document.getElementById('prof-nickname-input').value.trim();
-            const newDisplayId = document.getElementById('prof-display-id-input').value.trim();
-            const newBio = document.getElementById('prof-bio-input').value.trim();
+            const newNickname = document.getElementById('edit-nickname-input').value.trim();
+            const newDisplayId = document.getElementById('edit-display-id-input').value.trim();
+            const newBio = document.getElementById('edit-bio-input').value.trim();
 
             // 準備更新物件
             const updates = {
@@ -888,7 +936,7 @@
             };
 
             // 只有在 ID 欄位沒被鎖定且有變動時，才更新 ID 與時間戳
-            const idInput = document.getElementById('prof-display-id-input');
+            const idInput = document.getElementById('edit-display-id-input');
             if (!idInput.disabled) {
                 updates.display_id = newDisplayId;
                 updates.last_id_change = new Date();
@@ -905,7 +953,7 @@
             }
         }
 
-        // 3. 註銷帳號 (對齊設計圖垃圾桶)
+        // 4. 註銷帳號
         async function handleDeleteAccount() {
             if (confirm("⚠️ 確定要註銷嗎？這將永久刪除您的觀測紀錄與收藏！")) {
                 alert("註銷請求已送出，請靜候系統處理。");
