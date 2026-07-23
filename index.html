@@ -594,21 +594,32 @@
             }
         }
 
-        // 2. Google OAuth 登入功能
+        // 🚀 修正版：強制要求 Google 彈出帳號選擇器
         async function signInWithGoogle() {
-            const { error } = await supabaseClient.auth.signInWithOAuth({
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
-                options: { 
-                    redirectTo: window.location.origin // 登入後跳回觀測站
+                options: {
+                    // 關鍵：強制 Google 詢問要使用哪個帳號
+                    queryParams: {
+                        prompt: 'select_account' 
+                    },
+                    redirectTo: window.location.origin
                 }
             });
             if (error) console.error("Google 登入失敗:", error.message);
         }
 
-        // 3. 登出與 UI 切換
+        // 3. 登出與 UI 切換（確保包含 signOut() 與 reload()）
         async function handleSignOut() {
-            await supabaseClient.auth.signOut();
-            window.location.reload();
+            // 1. 通知 Supabase 清除 Token
+            const { error } = await supabaseClient.auth.signOut();
+            
+            if (error) {
+                console.error("登出失敗:", error.message);
+            } else {
+                // 2. 徹底重整頁面，確保所有全域變數與燈號歸零
+                window.location.reload(); 
+            }
         }
 
         function toggleUserDropdown() {
