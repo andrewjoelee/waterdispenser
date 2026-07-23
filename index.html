@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -29,6 +30,7 @@
         .container { width: 100%; max-width: 1000px; margin: 30px auto; padding: 0 20px; flex: 1; }
         
         .loading { text-align: center; padding: 50px; color: #888; font-size: 1.1rem; }
+        .hidden { display: none !important; }
         
         /* 區塊樣式 */
         .card { background: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
@@ -46,7 +48,7 @@
         .list-item:last-child { border-bottom: none; }
         .rank-badge { font-weight: bold; margin-right: 10px; color: #888; min-width: 25px; display: inline-block; }
         .rank-1, .rank-2, .rank-3 { color: #1a1a1a; }
-        .toggle-btn { display: block; width: 100%; text-align: center; padding: 10px; background: #f5f5f5; border: 1px solid #eaeaea; border-radius: 6px; margin-top: 10px; color: #555; font-size: 0.9rem; cursor: pointer; }
+        .toggle-btn { display: block; width: 100%; text-align: center; padding: 10px; background: #f5f5f5; border: 1px solid #eaeaea; border-radius: 6px; margin-top: 10px; color: #555; font-size: 0.9rem; border: 1px solid #eaeaea; cursor: pointer; }
         
         /* 全站統一卡片互動感（全區塊點擊、Apple 式懸停位移與投影） */
         .clickable-card { 
@@ -101,7 +103,7 @@
         .mission-list { padding-left: 20px; line-height: 1.8; font-size: 1.05rem; }
         .mission-list li { margin-bottom: 8px; font-weight: 500; }
         
-        .exam-btn { display: block; text-align: center; padding: 15px; background: #1a1a1a; color: #ffffff; border-radius: 6px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.2s; border: none; cursor: pointer; }
+        .exam-btn { display: block; text-align: center; padding: 15px; background: #1a1a1a; color: #ffffff; border-radius: 6px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.2s; }
         .exam-btn:hover { background: #333; text-decoration: none; }
 
         /* 🔍 全部總覽頁面專用篩選欄樣式 */
@@ -123,17 +125,18 @@
         .tech-item h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; color: #1a1a1a; }
         .tech-item p { font-size: 1rem; color: #444; margin-bottom: 0; }
         
+        /* 修正後的里程碑樣式：兩欄左對齊，提升高訊號雜訊比 */
         .milestone-container { 
             display: flex; 
             flex-direction: column; 
             gap: 8px; 
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 600px; /* 限制寬度讓視覺更集中 */
+            margin: 0 auto;  /* 居中顯示 */
         }
 
         .milestone-item { 
             display: flex; 
-            justify-content: flex-start;
+            justify-content: flex-start; /* 改為左對齊 */
             align-items: flex-start; 
             padding: 12px 0; 
             border-bottom: 1px solid #eaeaea; 
@@ -144,15 +147,15 @@
         .milestone-date { 
             font-weight: 500; 
             font-size: 0.95rem; 
-            color: #86868b;
-            flex: 0 0 110px;
+            color: #86868b; /* Apple 灰色 */
+            flex: 0 0 110px; /* 固定日期寬度，確保右側內容對齊一線 */
         }
 
         .milestone-title { 
             font-size: 0.95rem; 
             color: #1a1a1a; 
             flex: 1; 
-            text-align: left;
+            text-align: left; /* 強制內容向左靠攏 */
             line-height: 1.4;
         }
 
@@ -244,6 +247,7 @@
             align-items: center; justify-content: center; transition: all 0.3s ease; 
             overflow: hidden; padding: 0;
         }
+        /* 驗證成功的淡淡淡綠色燈號 */
         .avatar-btn.verified { background: #e3f9e5; border: 1.5px solid #34c759; }
         .avatar-btn.verified i { color: #34c759; }
 
@@ -259,40 +263,6 @@
             transition: transform 0.2s; font-weight: 500; 
         }
         .google-login-btn:hover { transform: translateY(-2px); background: #f5f5f7; }
-
-        /* 🎨 第一階段：個人檔案頁核心樣式注入 */
-        .profile-card { max-width: 600px; margin: 0 auto; text-align: left; padding: 40px 20px; }
-        .profile-info-layout { display: flex; gap: 25px; align-items: center; margin-bottom: 30px; }
-        .profile-avatar-side { flex: 0 0 100px; }
-        .profile-meta-side { flex: 1; }
-
-        .profile-nickname-title { font-size: 1.8rem; font-weight: 700; color: #1d1d1f; margin: 0; }
-        .profile-id-tag { font-size: 1rem; color: #86868b; margin: 4px 0; font-family: monospace; }
-        .threads-status { font-size: 0.85rem; color: #0066cc; font-weight: 500; }
-
-        .profile-bio-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #f5f5f7; }
-        .profile-bio-box { 
-            background: #fbfbfd; border-radius: 12px; padding: 15px; 
-            font-size: 1rem; color: #1d1d1f; line-height: 1.6; min-height: 100px;
-        }
-
-        .profile-input-group { margin-bottom: 20px; width: 100%; }
-        .profile-label { font-size: 0.75rem; color: #86868b; font-weight: 500; margin-bottom: 6px; display: block; }
-        .profile-field { 
-            width: 100%; border: none; background: #f5f5f7; border-radius: 10px; padding: 12px 16px;
-            font-size: 1rem; transition: all 0.3s; color: #1d1d1f;
-        }
-        .profile-field:focus { background: #fff; box-shadow: 0 0 0 4px rgba(0,102,204,0.1); outline: none; }
-        .profile-field:disabled { color: #86868b; cursor: not-allowed; }
-
-        .delete-account-btn { 
-            margin-top: 20px; color: #ff3b30; background: none; border: none; 
-            cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; opacity: 0.6;
-        }
-        .delete-account-btn:hover { opacity: 1; }
-
-        /* 編輯模式專屬隱藏 */
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -305,9 +275,12 @@
             <a href="#/club" id="nav-club">飲水機研究社</a>
             <a href="#/about" id="nav-about">關於我們</a>
             
+            <!-- 🚀 第一步：HTML 結構微調 (加入隱藏的 Google 頭像 img 標籤) -->
             <div class="user-menu-container">
                 <button class="avatar-btn" id="avatar-main-btn" onclick="toggleUserDropdown()">
+                    <!-- 預設的人頭圖標 -->
                     <i class="fa-solid fa-user" id="avatar-icon" style="color:#86868b;"></i>
+                    <!-- 🚀 新增：用來顯示 Google 頭像的圖片標籤 -->
                     <img id="user-avatar-img" src="" style="width: 100%; height: 100%; border-radius: 50%; display: none; object-fit: cover;">
                 </button>
                 <div id="user-dropdown" class="card">
@@ -321,8 +294,7 @@
                     <div id="user-info-content" class="hidden">
                         <p id="user-email" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;"></p>
                         <p style="font-size: 0.75rem; color: #34c759;"><i class="fa-solid fa-circle-check"></i> 已通過 Google 驗證</p>
-                        <a href="#/profile" style="display: block; font-size: 0.85rem; margin-top: 10px; color: #0066cc;" onclick="toggleUserDropdown()">👤 觀測員個人檔案</a>
-                        <button class="toggle-btn" style="margin-top:10px;" onclick="handleSignOut()">登出帳號</button>
+                        <button class="toggle-btn" style="margin-top:15px;" onclick="handleSignOut()">登出帳號</button>
                     </div>
                 </div>
             </div>
@@ -478,64 +450,6 @@
             </div>
         </div>
 
-        <!-- 🚀 第二階段：HTML 結構注入 (對齊手繪稿) -->
-        <div id="profile-view" class="view hidden">
-            <div class="card profile-card" style="max-width: 550px; margin: 0 auto;">
-                
-                <!-- 👁️ 檢視模式 (預設顯示) -->
-                <div id="prof-display-area">
-                    <div class="profile-info-layout">
-                        <div class="profile-avatar-side">
-                            <img id="view-prof-avatar" src="https://via.placeholder.com/100" class="profile-avatar-large" style="margin-bottom:0; width:100px; height:100px;">
-                        </div>
-                        <div class="profile-meta-side">
-                            <p class="profile-label" style="margin-bottom:2px;">暱稱</p>
-                            <h1 id="view-prof-nickname" class="profile-nickname-title">載入中...</h1>
-                            <p id="view-prof-id" class="profile-id-tag">@ --------</p>
-                            <p class="threads-status">Threads 尚未連接</p>
-                        </div>
-                    </div>
-
-                    <div class="profile-bio-section">
-                        <label class="profile-label">自介</label>
-                        <div id="view-prof-bio" class="profile-bio-box">這位觀測員很神秘，尚未留下自介。</div>
-                    </div>
-
-                    <!-- 只有本人看得到的編輯與註銷按鈕 -->
-                    <div id="own-profile-controls" class="hidden" style="margin-top: 30px;">
-                        <button class="exam-btn" style="width: 100%;" onclick="toggleProfileEdit(true)">編輯個人檔案</button>
-                        <button class="delete-account-btn" style="width: 100%; justify-content: center; margin-top:20px;" onclick="handleDeleteAccount()">
-                            <i class="fa-solid fa-trash-can"></i> 註銷帳號
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 🖋️ 編輯模式 (預設隱藏) -->
-                <div id="prof-edit-area" class="hidden">
-                    <h2 style="border:none; text-align:center; margin-bottom:25px;">校準觀測身分</h2>
-                    <div class="profile-input-group">
-                        <label class="profile-label">暱稱 (任意編輯)</label>
-                        <input type="text" id="edit-nickname-input" class="profile-field">
-                    </div>
-                    <div class="profile-input-group">
-                        <label class="profile-label">專屬 ID (七天可修改一次)</label>
-                        <input type="text" id="edit-display-id-input" class="profile-field">
-                        <p id="id-cooling-notice" style="font-size: 0.7rem; color: #ff9500; margin-top: 5px;" class="hidden"></p>
-                    </div>
-                    <div class="profile-input-group">
-                        <label class="profile-label">自介</label>
-                        <textarea id="edit-bio-input" class="profile-field" rows="4"></textarea>
-                    </div>
-                    <button class="exam-btn" style="width: 100%;" onclick="saveFullProfile()">儲存變更</button>
-                    <button class="toggle-btn" style="width: 100%; margin-top:10px;" onclick="toggleProfileEdit(false)">取消返回</button>
-                </div>
-
-                <div class="back-link-area" style="text-align: center; margin-top: 30px;">
-                    <a onclick="window.history.back()">&larr; 返回前一頁</a>
-                </div>
-            </div>
-        </div>
-
         <div id="about-lobby-view" class="view hidden">
             <div class="about-container">
                 <h1 class="main-title">關於我們</h1>
@@ -637,6 +551,7 @@
         <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">觀測站已持續運行</p>
         <div id="uptime-timer" class="timer-text">00 天 00 時 00 分 00 秒</div>
 
+        <!-- 🚀 飲水機觀測站極簡風全域頁尾 (Footer) -->
         <div class="apple-footer-meta">
             <span>v1.4.0</span>
             <span class="divider">|</span>
@@ -669,6 +584,7 @@
         let myPieChart = null;
         let userLocation = null; 
 
+        // 🚀 第二步：JavaScript 邏輯注入 (更新 checkLoginStatus 以讀取與顯示 Google 頭像)
         async function checkLoginStatus() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             const avatarBtn = document.getElementById('avatar-main-btn');
@@ -678,24 +594,28 @@
             const userContent = document.getElementById('user-info-content');
 
             if (user) {
+                // 1. 點亮專屬的「淡淡淡綠色」驗證燈號
                 avatarBtn.classList.add('verified');
                 authContent.classList.add('hidden');
                 userContent.classList.remove('hidden');
                 document.getElementById('user-email').innerText = user.email;
 
+                // 🚀 2. 抓取 Google 頭像網址並顯示
                 const googleAvatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
                 if (googleAvatarUrl) {
                     avatarImg.src = googleAvatarUrl;
-                    avatarImg.style.display = 'block';
-                    avatarIcon.style.display = 'none';
+                    avatarImg.style.display = 'block'; // 顯示圖片
+                    avatarIcon.style.display = 'none'; // 隱藏原本的灰色人頭 icon
                 }
             } else {
+                // 確保未登入時回歸預設
                 avatarBtn.classList.remove('verified');
                 avatarImg.style.display = 'none';
                 avatarIcon.style.display = 'block';
             }
         }
 
+        // 強制要求 Google 彈出帳號選擇器
         async function signInWithGoogle() {
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
@@ -709,8 +629,10 @@
             if (error) console.error("Google 登入失敗:", error.message);
         }
 
+        // 3. 登出與 UI 切換
         async function handleSignOut() {
             const { error } = await supabaseClient.auth.signOut();
+            
             if (error) {
                 console.error("登出失敗:", error.message);
             } else {
@@ -780,6 +702,8 @@
                 }));
                 document.getElementById('loading-view').classList.add('hidden');
                 handleRouting();
+
+                // 檢查使用者登入狀態
                 checkLoginStatus();
             } catch (err) {
                 console.error(err);
@@ -787,7 +711,7 @@
             }
         }
 
-        /* 🚀 結構化路由映射更新 (新增個人檔案路由) */
+        /* 🚀 結構化路由映射與融合關於我們 */
         function handleRouting() {
             const hash = window.location.hash || '#/';
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
@@ -825,8 +749,6 @@
                 renderClubPage();
             } else if (hash.startsWith('#/user/')) {
                 renderUserDetailPage(safeDecode(hash.substring(7)));
-            } else if (hash === '#/profile') {
-                fetchAndRenderCurrentProfile();
             } else if (hash === '#/about') {
                 document.getElementById('nav-about').classList.add('active');
                 document.getElementById('about-lobby-view').classList.remove('hidden');
@@ -840,123 +762,6 @@
                 document.getElementById('nav-about').classList.add('active');
                 document.getElementById('milestones-view').classList.remove('hidden');
                 fetchMilestones();
-            }
-        }
-
-        /* 🐍 第三階段：核心邏輯注入 (JavaScript) */
-
-        // 🔄 切換顯示與編輯模式
-        function toggleProfileEdit(showEdit) {
-            document.getElementById('prof-display-area').classList.toggle('hidden', showEdit);
-            document.getElementById('prof-edit-area').classList.toggle('hidden', !showEdit);
-        }
-
-        // 協助取得當前 Auth User 並載入 Profile 頁
-        async function fetchAndRenderCurrentProfile() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) {
-                alert("請先登入帳號以存取觀測員個人檔案！");
-                window.location.hash = "#/";
-                return;
-            }
-            renderProfilePage(user.id);
-        }
-
-        // 🚀 渲染個人頁面 (View Mode First)
-        async function renderProfilePage(profileId) {
-            document.getElementById('profile-view').classList.remove('hidden');
-            toggleProfileEdit(false); // 進入時強制先看檢視模式
-
-            const { data: profile, error } = await supabaseClient
-                .from('profiles').select('*').eq('id', profileId).single();
-
-            if (error || !profile) {
-                console.warn("無法取得個人檔案或檔案尚未建立:", error?.message);
-                return;
-            }
-
-            // 1. 填充檢視模式數據
-            if (profile.avatar_url) {
-                document.getElementById('view-prof-avatar').src = profile.avatar_url;
-            }
-            document.getElementById('view-prof-nickname').innerText = profile.nickname || "匿名觀測員";
-            document.getElementById('view-prof-id').innerText = `@${profile.display_id || '--------'}`;
-            document.getElementById('view-prof-bio').innerText = profile.bio || "這位觀測員很神秘，尚未留下自介。";
-
-            // 2. 判斷權限：如果是本人，才顯示編輯與註銷按鈕
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (user && user.id === profileId) {
-                document.getElementById('own-profile-controls').classList.remove('hidden');
-                
-                // 預填編輯欄位
-                document.getElementById('edit-nickname-input').value = profile.nickname || "";
-                document.getElementById('edit-display-id-input').value = profile.display_id || "";
-                document.getElementById('edit-bio-input').value = profile.bio || "";
-
-                // 🏆 關鍵：冷卻期檢查 (七天可修改一次)
-                const idInput = document.getElementById('edit-display-id-input');
-                const coolingNotice = document.getElementById('id-cooling-notice');
-                
-                if (profile.last_id_change) {
-                    const lastChange = new Date(profile.last_id_change);
-                    const daysDiff = (new Date() - lastChange) / (1000 * 60 * 60 * 24);
-                    
-                    if (daysDiff < 7) {
-                        idInput.disabled = true;
-                        coolingNotice.classList.remove('hidden');
-                        coolingNotice.innerText = `🔋 ID 冷卻中，還需 ${Math.ceil(7 - daysDiff)} 天即可再次修改。`;
-                    } else {
-                        idInput.disabled = false;
-                        coolingNotice.classList.add('hidden');
-                    }
-                } else {
-                    idInput.disabled = false;
-                    coolingNotice.classList.add('hidden');
-                }
-            } else {
-                document.getElementById('own-profile-controls').classList.add('hidden');
-            }
-        }
-
-        // 3. 儲存變更邏輯
-        async function saveFullProfile() {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) return alert("連動已中斷，請重新登入");
-
-            const newNickname = document.getElementById('edit-nickname-input').value.trim();
-            const newDisplayId = document.getElementById('edit-display-id-input').value.trim();
-            const newBio = document.getElementById('edit-bio-input').value.trim();
-
-            // 準備更新物件
-            const updates = {
-                id: user.id,
-                nickname: newNickname,
-                bio: newBio,
-                updated_at: new Date()
-            };
-
-            // 只有在 ID 欄位沒被鎖定且有變動時，才更新 ID 與時間戳
-            const idInput = document.getElementById('edit-display-id-input');
-            if (!idInput.disabled) {
-                updates.display_id = newDisplayId;
-                updates.last_id_change = new Date();
-            }
-
-            const { error } = await supabaseClient.from('profiles').upsert(updates);
-
-            if (error) {
-                if (error.code === '23505') alert("❌ 此 ID 已經被其他觀測員佔領了！");
-                else alert("儲存失敗：" + error.message);
-            } else {
-                alert("✅ 觀測員檔案已校準完成！");
-                location.reload();
-            }
-        }
-
-        // 4. 註銷帳號
-        async function handleDeleteAccount() {
-            if (confirm("⚠️ 確定要註銷嗎？這將永久刪除您的觀測紀錄與收藏！")) {
-                alert("註銷請求已送出，請靜候系統處理。");
             }
         }
 
@@ -1012,6 +817,7 @@
             renderHomePage();
         });
 
+        /* 🎛️ 總覽層級多路徑動態渲染處理 */
         function renderAllSubViews(subViewType) {
             document.getElementById('all-view').classList.remove('hidden');
             const titleEl = document.getElementById('all-view-main-title');
@@ -1214,6 +1020,7 @@
             }
         }
 
+        /* 🔍 深度鑽取 (Drill-down) 頁面渲染 */
         function renderDrilldownPage(targetName, type) {
             document.getElementById('drilldown-view').classList.remove('hidden');
             const titleEl = document.getElementById('drilldown-view-title');
@@ -1360,6 +1167,7 @@
             document.getElementById('det-join-time').innerText = item.createTime ? item.createTime.substring(0, 10) : "-";
         }
 
+        /* ==================== 發展里程碑數據非同步撈取邏輯 ==================== */
         async function fetchMilestones() {
             const container = document.getElementById('milestone-list');
             try {
@@ -1409,6 +1217,7 @@
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
             const seconds = Math.floor((diff / 1000) % 60);
 
             const pad = (num) => String(num).padStart(2, '0');
