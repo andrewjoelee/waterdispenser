@@ -47,7 +47,7 @@
         .list-item:last-child { border-bottom: none; }
         .rank-badge { font-weight: bold; margin-right: 10px; color: #888; min-width: 25px; display: inline-block; }
         .rank-1, .rank-2, .rank-3 { color: #1a1a1a; }
-        .toggle-btn { display: block; width: 100%; text-align: center; padding: 10px; background: #f5f5f5; border: 1px solid #eaeaea; border-radius: 6px; margin-top: 10px; color: #555; font-size: 0.9rem; cursor: pointer; }
+        .toggle-btn { display: block; width: 100%; text-align: center; padding: 10px; background: #f5f5f5; border: 1px solid #eaeaea; border-radius: 6px; margin-top: 10px; color: #555; font-size: 0.9rem; border: 1px solid #eaeaea; cursor: pointer; }
         
         /* 全站統一卡片互動感（全區塊點擊、Apple 式懸停位移與投影） */
         .clickable-card { 
@@ -102,7 +102,7 @@
         .mission-list { padding-left: 20px; line-height: 1.8; font-size: 1.05rem; }
         .mission-list li { margin-bottom: 8px; font-weight: 500; }
         
-        .exam-btn { display: block; text-align: center; padding: 15px; background: #1a1a1a; color: #ffffff; border-radius: 6px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.2s; border: none; cursor: pointer; }
+        .exam-btn { display: block; text-align: center; padding: 15px; background: #1a1a1a; color: #ffffff; border-radius: 6px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.2s; }
         .exam-btn:hover { background: #333; text-decoration: none; }
 
         /* 🔍 全部總覽頁面專用篩選欄樣式 */
@@ -262,33 +262,6 @@
             transition: transform 0.2s; font-weight: 500; 
         }
         .google-login-btn:hover { transform: translateY(-2px); background: #f5f5f7; }
-
-        /* 🧵 Proposal A: Threads 極簡線條風 */
-        .comment-thread { margin-top: 25px; border-top: 1px solid #f5f5f7; padding-top: 20px; }
-        .comment-item { display: flex; gap: 12px; padding: 16px 0; border-bottom: 1px solid #f9f9f9; }
-        .comment-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #eee; }
-        .comment-content { flex: 1; }
-        .comment-nickname { font-weight: 600; font-size: 0.9rem; color: #1d1d1f; }
-        .comment-time { font-size: 0.75rem; color: #86868b; margin-left: 8px; font-weight: 200; }
-        .comment-text { font-size: 0.92rem; color: #1d1d1f; margin-top: 4px; line-height: 1.5; }
-        .comment-textarea { width: 100%; min-height: 80px; padding: 10px; border: 1px solid #d2d2d7; border-radius: 8px; font-size: 0.9rem; margin-bottom: 10px; outline: none; resize: vertical; }
-        .comment-textarea:focus { border-color: #0066cc; }
-
-        /* 🌳 層次化回覆樣式 */
-        .reply-group { margin-left: 48px; border-left: 2px solid #f5f5f7; padding-left: 15px; display: none; }
-        .reply-btn { 
-            background: none; border: none; color: #0066cc; font-size: 0.8rem; 
-            padding: 0; cursor: pointer; margin-top: 8px; font-weight: 500;
-        }
-        .show-replies-btn {
-            font-size: 0.75rem; color: #86868b; background: #f5f5f7; 
-            border-radius: 20px; padding: 4px 12px; border: none; cursor: pointer; margin-top: 5px;
-        }
-        /* 暱稱修改框樣式 */
-        .nickname-input { 
-            width: 100%; padding: 8px; border: 1px solid #d2d2d7; 
-            border-radius: 8px; font-size: 0.85rem; margin-bottom: 10px; 
-        }
     </style>
 </head>
 <body>
@@ -301,9 +274,12 @@
             <a href="#/club" id="nav-club">飲水機研究社</a>
             <a href="#/about" id="nav-about">關於我們</a>
             
+            <!-- 🚀 第一步：HTML 結構微調 (加入隱藏的 Google 頭像 img 標籤) -->
             <div class="user-menu-container">
                 <button class="avatar-btn" id="avatar-main-btn" onclick="toggleUserDropdown()">
+                    <!-- 預設的人頭圖標 -->
                     <i class="fa-solid fa-user" id="avatar-icon" style="color:#86868b;"></i>
+                    <!-- 🚀 新增：用來顯示 Google 頭像的圖片標籤 -->
                     <img id="user-avatar-img" src="" style="width: 100%; height: 100%; border-radius: 50%; display: none; object-fit: cover;">
                 </button>
                 <div id="user-dropdown" class="card">
@@ -314,29 +290,10 @@
                             <span>以 Google 帳號繼續</span>
                         </button>
                     </div>
-                    <!-- 🚀 尋找 user-info-content 區塊 -->
                     <div id="user-info-content" class="hidden">
                         <p id="user-email" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;"></p>
-                        <p style="font-size: 0.75rem; color: #34c759; margin-bottom: 12px;">
-                            <i class="fa-solid fa-circle-check"></i> 已通過 Google 驗證
-                        </p>
-
-                        <!-- 🏷️ 個人檔案設定區 (已注入) -->
-                        <div style="border-top: 1px solid #f5f5f7; padding-top: 12px; margin-bottom: 12px;">
-                            <label style="font-size: 0.7rem; color: #86868b; display: block; margin-bottom: 5px;">觀測員暱稱</label>
-                            <div style="display: flex; gap: 8px;">
-                                <input type="text" id="header-nickname-field" 
-                                    style="flex: 1; padding: 6px 10px; border: 1px solid #d2d2d7; border-radius: 6px; font-size: 0.8rem;" 
-                                    placeholder="輸入您的暱稱...">
-                                <button onclick="updateNickname()" 
-                                    style="background: #0066cc; color: white; border: none; border-radius: 6px; padding: 0 10px; font-size: 0.75rem; cursor: pointer;">
-                                    儲存
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 原有的登出按鈕 -->
-                        <button class="toggle-btn" style="margin-top:0; width: 100%;" onclick="handleSignOut()">登出帳號</button>
+                        <p style="font-size: 0.75rem; color: #34c759;"><i class="fa-solid fa-circle-check"></i> 已通過 Google 驗證</p>
+                        <button class="toggle-btn" style="margin-top:15px;" onclick="handleSignOut()">登出帳號</button>
                     </div>
                 </div>
             </div>
@@ -487,30 +444,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 🚀 第三階段：HTML 結構注入 (留言板掛載點) -->
-            <div class="card" style="margin-top: 20px;">
-                <h3>觀測員討論區</h3>
-                
-                <!-- 暱稱設定區 (登入後顯示) -->
-                <div id="nickname-setting" class="hidden" style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #eee;">
-                    <label style="font-size: 0.8rem; color: #86868b;">您的觀測暱稱：</label>
-                    <div style="display: flex; gap: 10px; margin-top: 5px;">
-                        <input type="text" id="user-nickname-field" class="nickname-input" placeholder="設定您的帥氣暱稱...">
-                        <button class="badge" style="height: 35px; cursor: pointer;" onclick="updateNickname()">儲存</button>
-                    </div>
-                </div>
-
-                <div id="comment-input-root">
-                    <textarea id="main-comment-text" class="comment-textarea" placeholder="說點什麼..."></textarea>
-                    <button class="exam-btn" style="width: auto; padding: 8px 20px;" onclick="postComment(null)">發佈</button>
-                </div>
-
-                <div id="threaded-comments" class="comment-thread">
-                    <!-- 留言 A, B, C 將在此渲染 -->
-                </div>
-            </div>
-
             <div style="margin-top: 30px;">
                 <a onclick="window.history.back()" style="color:#0066cc; cursor:pointer;">&larr; 返回前一頁</a>
             </div>
@@ -617,6 +550,7 @@
         <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">觀測站已持續運行</p>
         <div id="uptime-timer" class="timer-text">00 天 00 時 00 分 00 秒</div>
 
+        <!-- 🚀 飲水機觀測站極簡風全域頁尾 (Footer) -->
         <div class="apple-footer-meta">
             <span>v1.4.0</span>
             <span class="divider">|</span>
@@ -649,22 +583,7 @@
         let myPieChart = null;
         let userLocation = null; 
 
-        // 🔄 強化檢查：登入時自動填入現有暱稱
-        async function syncNicknameDisplay(userId) {
-            const { data, error } = await supabaseClient
-                .from('profiles')
-                .select('nickname')
-                .eq('id', userId)
-                .single();
-            
-            if (data && data.nickname) {
-                const headerField = document.getElementById('header-nickname-field');
-                const userField = document.getElementById('user-nickname-field');
-                if (headerField) headerField.value = data.nickname;
-                if (userField) userField.value = data.nickname;
-            }
-        }
-
+        // 🚀 第二步：JavaScript 邏輯注入 (更新 checkLoginStatus 以讀取與顯示 Google 頭像)
         async function checkLoginStatus() {
             const { data: { user } } = await supabaseClient.auth.getUser();
             const avatarBtn = document.getElementById('avatar-main-btn');
@@ -672,32 +591,30 @@
             const avatarImg = document.getElementById('user-avatar-img');
             const authContent = document.getElementById('auth-content');
             const userContent = document.getElementById('user-info-content');
-            const nicknameSetting = document.getElementById('nickname-setting');
 
             if (user) {
+                // 1. 點亮專屬的「淡淡淡綠色」驗證燈號
                 avatarBtn.classList.add('verified');
                 authContent.classList.add('hidden');
                 userContent.classList.remove('hidden');
-                if (nicknameSetting) nicknameSetting.classList.remove('hidden');
                 document.getElementById('user-email').innerText = user.email;
 
+                // 🚀 2. 抓取 Google 頭像網址並顯示
                 const googleAvatarUrl = user.user_metadata?.avatar_url || user.user_metadata?.picture;
                 if (googleAvatarUrl) {
                     avatarImg.src = googleAvatarUrl;
-                    avatarImg.style.display = 'block';
-                    avatarIcon.style.display = 'none';
+                    avatarImg.style.display = 'block'; // 顯示圖片
+                    avatarIcon.style.display = 'none'; // 隱藏原本的灰色人頭 icon
                 }
-
-                // 自動同步顯示暱稱
-                await syncNicknameDisplay(user.id);
             } else {
+                // 確保未登入時回歸預設
                 avatarBtn.classList.remove('verified');
                 avatarImg.style.display = 'none';
                 avatarIcon.style.display = 'block';
-                if (nicknameSetting) nicknameSetting.classList.add('hidden');
             }
         }
 
+        // 強制要求 Google 彈出帳號選擇器
         async function signInWithGoogle() {
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
@@ -711,8 +628,10 @@
             if (error) console.error("Google 登入失敗:", error.message);
         }
 
+        // 3. 登出與 UI 切換
         async function handleSignOut() {
             const { error } = await supabaseClient.auth.signOut();
+            
             if (error) {
                 console.error("登出失敗:", error.message);
             } else {
@@ -783,6 +702,7 @@
                 document.getElementById('loading-view').classList.add('hidden');
                 handleRouting();
 
+                // 檢查使用者登入狀態
                 checkLoginStatus();
             } catch (err) {
                 console.error(err);
@@ -790,6 +710,7 @@
             }
         }
 
+        /* 🚀 結構化路由映射與融合關於我們 */
         function handleRouting() {
             const hash = window.location.hash || '#/';
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
@@ -895,6 +816,7 @@
             renderHomePage();
         });
 
+        /* 🎛️ 總覽層級多路徑動態渲染處理 */
         function renderAllSubViews(subViewType) {
             document.getElementById('all-view').classList.remove('hidden');
             const titleEl = document.getElementById('all-view-main-title');
@@ -1097,6 +1019,7 @@
             }
         }
 
+        /* 🔍 深度鑽取 (Drill-down) 頁面渲染 */
         function renderDrilldownPage(targetName, type) {
             document.getElementById('drilldown-view').classList.remove('hidden');
             const titleEl = document.getElementById('drilldown-view-title');
@@ -1241,155 +1164,6 @@
             
             document.getElementById('det-time').innerText = item.updateTime || "-";
             document.getElementById('det-join-time').innerText = item.createTime ? item.createTime.substring(0, 10) : "-";
-
-            // 渲染此飲水機頁面的討論留言
-            fetchThreadedComments(userId);
-        }
-
-        /* 🚀 核心邏輯：更新/儲存暱稱 (整合版) */
-        async function updateNickname() {
-            // 優先讀取 header 中的欄位，若無則嘗試讀取個人頁面欄位
-            const headerInput = document.getElementById('header-nickname-field');
-            const pageInput = document.getElementById('user-nickname-field');
-            const newName = (headerInput ? headerInput.value : pageInput ? pageInput.value : '').trim();
-            
-            if (!newName) return alert("請輸入暱稱！");
-
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) return alert("請先登入帳號！");
-
-            const { error } = await supabaseClient
-                .from('profiles')
-                .upsert({ 
-                    id: user.id, 
-                    nickname: newName, 
-                    avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture,
-                    updated_at: new Date()
-                });
-
-            if (!error) {
-                alert("觀測身分校準成功！");
-                // 同步兩個欄位的值
-                if (headerInput) headerInput.value = newName;
-                if (pageInput) pageInput.value = newName;
-
-                // 更新成功後，重新刷清頁面留言板，讓暱稱同步生效
-                const currentHash = window.location.hash;
-                if (currentHash.startsWith('#/user/')) {
-                    const currentId = safeDecode(currentHash.substring(7));
-                    if (typeof fetchThreadedComments === "function" && currentId) {
-                        fetchThreadedComments(currentId);
-                    }
-                }
-            } else {
-                console.error("更新失敗:", error.message);
-                alert("暱稱更新失敗：" + error.message);
-            }
-        }
-
-        // 發佈主留言或層次化回覆
-        async function postComment(parentId = null) {
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            if (!user) {
-                alert("請先登入帳號再發佈留言！");
-                return;
-            }
-
-            const inputEl = parentId 
-                ? document.getElementById(`reply-input-${parentId}`)
-                : document.getElementById('main-comment-text');
-
-            const content = inputEl.value.trim();
-            if (!content) return;
-
-            const currentHash = window.location.hash;
-            const dispenserId = safeDecode(currentHash.substring(7));
-
-            const { error } = await supabaseClient
-                .from('comments')
-                .insert({
-                    dispenser_id: dispenserId,
-                    user_id: user.id,
-                    content: content,
-                    parent_id: parentId
-                });
-
-            if (!error) {
-                inputEl.value = '';
-                fetchThreadedComments(dispenserId);
-            } else {
-                alert("留言發佈失敗：" + error.message);
-            }
-        }
-
-        // 2. 抓取並渲染留言 (包含回覆)
-        async function fetchThreadedComments(dispenserId) {
-            const { data, error } = await supabaseClient
-                .from('comments')
-                .select(`*, profiles(nickname, avatar_url)`)
-                .eq('dispenser_id', dispenserId)
-                .order('created_at', { ascending: false });
-
-            if (error) return;
-
-            const mainComments = data.filter(c => !c.parent_id);
-            const replies = data.filter(c => c.parent_id);
-
-            const container = document.getElementById('threaded-comments');
-            if (mainComments.length === 0) {
-                container.innerHTML = '<div style="color:#aaa; text-align:center; padding:20px;">尚無觀測員留言，快來搶沙發！</div>';
-                return;
-            }
-
-            container.innerHTML = mainComments.map(c => `
-                <div class="comment-item" id="msg-${c.id}">
-                    <img src="${c.profiles?.avatar_url || 'https://via.placeholder.com/36'}" class="comment-avatar">
-                    <div class="comment-content">
-                        <div class="comment-nickname">${c.profiles?.nickname || '匿名觀測員'} 
-                            <span class="comment-time">${new Date(c.created_at).toLocaleString()}</span>
-                        </div>
-                        <div class="comment-text">${c.content}</div>
-                        
-                        <button class="reply-btn" onclick="toggleReplyBox('${c.id}')">回覆</button>
-                        
-                        <!-- 回覆按鈕 -->
-                        <button class="show-replies-btn" onclick="toggleReplies('${c.id}')">
-                            顯示回覆 (${replies.filter(r => r.parent_id === c.id).length})
-                        </button>
-                        
-                        <!-- 回覆輸入框區塊 -->
-                        <div id="reply-box-${c.id}" class="hidden" style="margin-top:10px;">
-                            <textarea id="reply-input-${c.id}" class="comment-textarea" placeholder="寫下您的回覆..." style="min-height:50px;"></textarea>
-                            <button class="exam-btn" style="width: auto; padding: 4px 12px; font-size: 0.8rem;" onclick="postComment('${c.id}')">送出回覆</button>
-                        </div>
-
-                        <!-- 回覆清單 -->
-                        <div id="replies-${c.id}" class="reply-group">
-                            ${replies.filter(r => r.parent_id === c.id).map(r => `
-                                <div class="comment-item">
-                                    <img src="${r.profiles?.avatar_url || 'https://via.placeholder.com/25'}" class="comment-avatar" style="width:25px;height:25px;">
-                                    <div class="comment-content">
-                                        <div class="comment-nickname" style="font-size:0.85rem;">${r.profiles?.nickname || '匿名'}</div>
-                                        <div class="comment-text" style="font-size:0.85rem;">${r.content}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 切換回覆顯示邏輯
-        function toggleReplies(id) {
-            const el = document.getElementById(`replies-${id}`);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block';
-        }
-
-        // 切換回覆輸入框顯示
-        function toggleReplyBox(id) {
-            const el = document.getElementById(`reply-box-${id}`);
-            el.classList.toggle('hidden');
         }
 
         /* ==================== 發展里程碑數據非同步撈取邏輯 ==================== */
